@@ -1,0 +1,356 @@
+import '../models/app_user.dart';
+import '../models/auth_user.dart';
+import '../models/contact.dart';
+import '../models/dashboard_stats.dart';
+import '../models/lead.dart';
+import '../models/membership_plan.dart';
+import '../models/referral.dart';
+import '../models/role_model.dart';
+
+class MockData {
+  MockData._();
+
+  static const AuthUser currentUser = AuthUser(
+    id: '1',
+    name: 'Shreesha Hegde',
+    email: 'shreeshahegde@gmail.com',
+    role: 'superadmin',
+  );
+
+  static final List<Lead> leads = [
+    const Lead(
+      id: '1',
+      customerName: 'Geetha',
+      businessName: 'Geetha School',
+      phone: '+91 87654 77777',
+      email: '',
+      leadType: 'Commercial',
+      status: 'Interested',
+      priority: 'Medium',
+      nextStep: 'Bank Loan Process',
+      price: 450000,
+      lastContact: '13 Aug 2026',
+      address: 'Manipal, Udupi, Karnataka',
+      latitude: 13.3525,
+      longitude: 74.7865,
+      todayVisit: true,
+      tags: ['Very High Priority', 'Shreesha Very High Priority Lead', 'Shreesha New Leads'],
+    ),
+    const Lead(
+      id: '2',
+      customerName: 'Sandhya',
+      businessName: 'Sandhya',
+      phone: '+91 99001 99001',
+      leadType: 'Residential',
+      status: 'Quotation Sent',
+      priority: 'Low',
+      nextStep: 'Follow-up Call',
+      price: 185000,
+      lastContact: '12 Aug 2026',
+      address: 'Udupi, Karnataka',
+      latitude: 13.3409,
+      longitude: 74.7421,
+      tags: ['Interested', 'BNI Contacts'],
+    ),
+    const Lead(
+      id: '3',
+      customerName: 'Sumanth',
+      businessName: 'Sumanth',
+      phone: '+91 98450 11223',
+      leadType: 'Residential',
+      status: 'Qualified',
+      priority: 'High',
+      nextStep: 'Site Survey',
+      price: 220000,
+      lastContact: '11 Aug 2026',
+      address: 'Mangalore, Karnataka',
+      latitude: 12.9141,
+      longitude: 74.8560,
+      todayVisit: true,
+      tags: ['Very High Priority', 'New Very High Priority', 'order processing'],
+    ),
+    const Lead(
+      id: '4',
+      customerName: 'Subhash Kamath',
+      businessName: 'Abharan Jewellers Udupi',
+      phone: '+91 87926 38488',
+      leadType: 'Commercial',
+      status: 'Deal Confirmed',
+      priority: 'High',
+      nextStep: 'Installation',
+      price: 250000,
+      lastContact: '10 Aug 2026',
+      address: 'Car Street, Udupi, Karnataka',
+      latitude: 13.3382,
+      longitude: 74.7454,
+      todayVisit: true,
+      tags: ['Very High Priority', 'Shreesha interested vhigh', 'vijeshwari leads'],
+    ),
+    const Lead(
+      id: '5',
+      customerName: 'Amit Aravind',
+      businessName: 'Archana Projects',
+      phone: '+91 98765 43210',
+      email: 'amit@amit.com',
+      leadType: 'Commercial',
+      status: 'Qualified',
+      priority: 'High',
+      nextStep: 'Site Survey',
+      price: 480000,
+      lastContact: '09 Aug 2026',
+      address: 'Parkala, Udupi, Karnataka',
+      latitude: 13.3538,
+      longitude: 74.8012,
+      tags: ['BNI Contacts', 'bni new leads', 'Shreesha New Leads'],
+    ),
+    const Lead(
+      id: '6',
+      customerName: 'Ravi Kumar',
+      businessName: 'Green Energy Pvt Ltd',
+      phone: '+91 91234 56780',
+      email: 'ravi@green.com',
+      leadType: 'Industrial',
+      status: 'Interested',
+      priority: 'Medium',
+      nextStep: 'Quotation',
+      price: 1200000,
+      lastContact: '08 Aug 2026',
+      address: 'Industrial Area, Mangalore, Karnataka',
+      latitude: 12.9354,
+      longitude: 74.8301,
+      tags: ['Interested', 'order processing'],
+    ),
+    const Lead(
+      id: '7',
+      customerName: 'Priya Shetty',
+      businessName: 'Shetty Residency',
+      phone: '+91 99887 76655',
+      email: 'priya@mail.com',
+      leadType: 'Residential',
+      status: 'Quotation Sent',
+      priority: 'Low',
+      nextStep: 'Follow Up',
+      price: 185000,
+      lastContact: '07 Aug 2026',
+      address: 'Karkala, Karnataka',
+      latitude: 13.2147,
+      longitude: 74.9936,
+      tags: ['New Very High Priority', 'vijeshwari leads'],
+    ),
+    const Lead(
+      id: '8',
+      customerName: 'Director HIGH',
+      businessName: 'Navadurga Food Products',
+      phone: '+91 70224 48888',
+      email: 'dir@navadurga.com',
+      leadType: 'Commercial',
+      status: 'Deal Confirmed',
+      priority: 'High',
+      nextStep: 'Completed',
+      price: 950000,
+      lastContact: '06 Aug 2026',
+      address: 'Nandikur, Udupi, Karnataka',
+      latitude: 13.1804,
+      longitude: 74.8002,
+      todayVisit: true,
+      tags: ['Very High Priority', 'BNI Contacts', 'bni new leads'],
+    ),
+  ];
+
+  static final List<Referral> referrals = [
+    const Referral(
+      id: '1',
+      referredBy: 'Chandhan Shettigar',
+      leadOwner: 'Vruddi',
+      customerName: 'Director HIGH',
+      businessName: 'Navadurga Food Products, Nandikur',
+      contactNo: '+91 70224 48888',
+    ),
+    const Referral(
+      id: '2',
+      referredBy: 'Shreesha Hegde',
+      leadOwner: 'Sales Team',
+      customerName: 'Anitha Rao',
+      businessName: 'Rao Solar Home',
+      contactNo: '+91 98450 12345',
+    ),
+    const Referral(
+      id: '3',
+      referredBy: 'BNI Contact',
+      leadOwner: 'Vruddi',
+      customerName: 'Kiran Pai',
+      businessName: 'Pai Enterprises',
+      contactNo: '+91 99001 23456',
+    ),
+  ];
+
+  static final List<Contact> contacts = [
+    const Contact(
+      id: '1',
+      firstName: 'Prashanth',
+      lastName: 'Puthran',
+      jobTitle: 'AEE',
+      companyName: 'MESCOM',
+      phone1: '+91 12312 31231',
+      email: 'prashanth.puthran@mescom.in',
+      industry: 'Power Distribution',
+      city: 'Mangalore',
+      state: 'Karnataka',
+      country: 'India',
+    ),
+    const Contact(
+      id: '2',
+      firstName: 'Avinash',
+      lastName: 'K',
+      jobTitle: 'Fabricator',
+      companyName: 'Avinash Fabrication',
+      phone1: '+91 12345 67890',
+      email: 'avinash.k@gmail.com',
+      industry: 'Manufacturing',
+      city: 'Udupi',
+      state: 'Karnataka',
+      country: 'India',
+    ),
+    const Contact(
+      id: '3',
+      firstName: 'Meera',
+      lastName: 'Nair',
+      jobTitle: 'Manager',
+      phone1: '+91 98765 01234',
+      email: 'meera@company.com',
+      companyName: 'Solar Tech',
+      industry: 'Energy',
+      streetAddress: 'MG Road',
+      city: 'Bangalore',
+      state: 'Karnataka',
+      country: 'India',
+      zipcode: '560001',
+    ),
+  ];
+
+  static final List<AppUser> users = [
+    const AppUser(
+      id: '1',
+      contactName: 'Shreesha Hegde',
+      contactNo: '+91 98765 43210',
+      email: 'shreeshahegde@gmail.com',
+      address: 'Mangalore',
+      role: 'Administrator',
+    ),
+    const AppUser(
+      id: '2',
+      contactName: 'Vruddi',
+      contactNo: '+91 91234 56789',
+      email: 'vruddi@solarbizsuite.in',
+      address: 'Udupi',
+      role: 'Sales Manager',
+    ),
+    const AppUser(
+      id: '3',
+      contactName: 'Ramesh Rao',
+      contactNo: '+91 99887 76655',
+      altContactNo: '8877665544',
+      email: 'ramesh@solarbizsuite.in',
+      address: 'Bangalore',
+      role: 'Sales Representative',
+    ),
+    const AppUser(
+      id: '4',
+      contactName: 'Anita Shetty',
+      contactNo: '+91 90123 45678',
+      email: 'anita@solarbizsuite.in',
+      role: 'Supervisor',
+    ),
+  ];
+
+  static final List<RoleModel> roles = [
+    RoleModel(id: '1', name: 'Administrator', createdAt: DateTime(2025, 9, 23, 4, 38)),
+    RoleModel(id: '2', name: 'Sales Manager', createdAt: DateTime(2025, 9, 23, 4, 38)),
+    RoleModel(id: '3', name: 'Sales Representative', createdAt: DateTime(2025, 9, 23, 4, 40)),
+    RoleModel(id: '4', name: 'Marketing Manager', createdAt: DateTime(2025, 9, 23, 4, 42)),
+    RoleModel(id: '5', name: 'Customer Support', createdAt: DateTime(2025, 9, 24, 10, 15)),
+    RoleModel(id: '6', name: 'Supervisor', createdAt: DateTime(2025, 9, 24, 11, 20)),
+  ];
+
+  static const List<String> planFeaturesUnlimited = [
+    'Dashboard',
+    'Leads',
+    'Contacts Management',
+    'Referral Management',
+    'Clients',
+    'Tasks',
+    'User Management',
+    'Products',
+    'Vendor Management',
+    'Complaint Management',
+  ];
+
+  static final List<MembershipPlan> plans = [
+    const MembershipPlan(
+      id: '1',
+      name: 'Enterprise Gold',
+      pricePerMonth: 22000,
+      features: planFeaturesUnlimited,
+    ),
+    MembershipPlan(
+      id: '2',
+      name: 'Basic',
+      pricePerMonth: 11779,
+      features: [
+        ...planFeaturesUnlimited.take(6),
+        '5 User Management',
+        ...planFeaturesUnlimited.skip(7),
+      ],
+      restrictionNote: '5 User Management',
+    ),
+    MembershipPlan(
+      id: '3',
+      name: 'Basic 6 Users',
+      pricePerMonth: 10000,
+      features: [
+        ...planFeaturesUnlimited.take(6),
+        '6 User Management',
+        ...planFeaturesUnlimited.skip(7),
+      ],
+      restrictionNote: '6 User Management',
+    ),
+  ];
+
+  static DashboardStats get dashboardStats {
+    final completed = leads.where((l) => l.nextStep == 'Completed').toList();
+    return DashboardStats(
+      totalLeads: leads.length,
+      totalContacts: contacts.length,
+      totalReferrers: referrals.length,
+      totalTasks: 8,
+      userName: currentUser.name,
+      planExpiryMessage: 'Your plan expires today.',
+      leadsByStatus: List.from(leads),
+      leadsByPriority: List.from(leads),
+      leadOverview: List.from(leads),
+      leadFinancials: List.from(leads),
+      leadsByNextStep: leads.where((l) => l.nextStep != 'Completed').toList(),
+      leadsCompleted: completed,
+    );
+  }
+
+  static const List<String> leadFilters = [
+    'All',
+    'Today',
+    'High Priority',
+    'Interested',
+  ];
+
+  static const List<String> leadCustomFilters = [
+    'Very High Priority',
+    'Interested',
+    'New Very High Priority',
+    'BNI Contacts',
+    'Shreesha Very High Priority Lead',
+    'Shreesha New Leads',
+    'Shreesha interested vhigh',
+    'bni new leads',
+    'order processing',
+    'vijeshwari leads',
+  ];
+}
