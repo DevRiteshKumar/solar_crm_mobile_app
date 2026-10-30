@@ -7,6 +7,7 @@ import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/lead_list_card.dart';
 import '../../core/widgets/lead_summary_bar.dart';
 import '../../core/widgets/loading_view.dart';
+import '../../core/widgets/pro_ui.dart';
 import '../../data/models/lead.dart';
 import '../leads/leads_controller.dart';
 import '../shell/shell_controller.dart';
@@ -227,13 +228,15 @@ class _DashboardHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Dashboard',
+                OneLineTitle(
+                  text: 'Dashboard',
                   style: AppTextStyles.heading2.copyWith(
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.4,
+                    height: 1.15,
                   ),
+                  minFontSize: 16,
                 ),
                 const SizedBox(height: 4),
                 Container(

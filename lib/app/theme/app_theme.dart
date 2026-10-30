@@ -18,13 +18,16 @@ class AppTheme {
         surface: AppColors.surface,
         error: AppColors.error,
       ),
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: AppColors.surface,
         foregroundColor: AppColors.textPrimary,
         elevation: 0,
         centerTitle: false,
-        titleTextStyle: AppTextStyles.heading3,
-        iconTheme: IconThemeData(color: AppColors.textPrimary),
+        titleTextStyle: AppTextStyles.heading3.copyWith(
+          overflow: TextOverflow.ellipsis,
+          height: 1.15,
+        ),
+        iconTheme: const IconThemeData(color: AppColors.textPrimary),
       ),
       cardTheme: CardThemeData(
         color: AppColors.surface,

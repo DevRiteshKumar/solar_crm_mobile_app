@@ -23,15 +23,30 @@ class ContactListCard extends StatelessWidget {
     required this.onEdit,
   });
 
+  String get _address {
+    final parts = [
+      contact.streetAddress,
+      contact.city,
+      contact.state,
+    ].where((p) => p != null && p.trim().isNotEmpty).map((p) => p!.trim());
+    if (parts.isEmpty) return '-';
+    return parts.join(', ');
+  }
+
+  String get _chipLabel {
+    if (contact.companyName != null && contact.companyName!.trim().isNotEmpty) {
+      return contact.companyName!.trim();
+    }
+    if (contact.jobTitle != null && contact.jobTitle!.trim().isNotEmpty) {
+      return contact.jobTitle!.trim();
+    }
+    return '';
+  }
+
   @override
   Widget build(BuildContext context) {
-    final subtitle = [
-      if (contact.jobTitle != null && contact.jobTitle!.trim().isNotEmpty) contact.jobTitle!.trim(),
-      if (contact.companyName != null && contact.companyName!.trim().isNotEmpty) contact.companyName!.trim(),
-    ].join(' · ');
-
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -44,9 +59,9 @@ class ContactListCard extends StatelessWidget {
               border: Border.all(color: AppColors.border),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.05),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
@@ -56,114 +71,129 @@ class ContactListCard extends StatelessWidget {
                 decoration: const BoxDecoration(
                   border: Border(left: BorderSide(color: AppColors.primary, width: 4)),
                 ),
-                padding: const EdgeInsets.fromLTRB(12, 12, 10, 10),
+                padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        Container(
-                          width: 44,
-                          height: 44,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                AppColors.primary,
-                                AppColors.primary.withValues(alpha: 0.78),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Text(
-                            _initials(contact.fullName),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
+                        _Avatar(label: _initials(contact.fullName)),
+                        const SizedBox(width: 10),
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
                             children: [
-                              Text(
-                                contact.fullName,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: AppTextStyles.bodyMedium.copyWith(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                              if (subtitle.isNotEmpty) ...[
-                                const SizedBox(height: 3),
-                                Text(
-                                  subtitle,
+                              Expanded(
+                                child: Text(
+                                  contact.fullName,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: AppTextStyles.body.copyWith(
-                                    color: AppColors.textSecondary,
-                                    fontSize: 13,
+                                  style: AppTextStyles.bodyMedium.copyWith(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w800,
+                                    height: 1.2,
                                   ),
                                 ),
+                              ),
+                              if (_chipLabel.isNotEmpty) ...[
+                                const SizedBox(width: 6),
+                                _TypeChip(label: _chipLabel),
                               ],
                             ],
                           ),
                         ),
-                        InkWell(
-                          onTap: onMore,
-                          borderRadius: BorderRadius.circular(20),
-                          child: const Padding(
-                            padding: EdgeInsets.all(4),
-                            child: Icon(Icons.more_vert, size: 20, color: AppColors.textHint),
-                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _InfoLine(
+                                icon: Icons.call_outlined,
+                                text: contact.phone1,
+                                iconColor: AppColors.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: _InfoLine(
+                                icon: Icons.mail_outline_rounded,
+                                text: (contact.email != null && contact.email!.trim().isNotEmpty)
+                                    ? contact.email!
+                                    : '-',
+                                iconColor: const Color(0xFF1565C0),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _InfoLine(
+                                icon: Icons.location_on_outlined,
+                                text: _address,
+                                iconColor: AppColors.accentOrange,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: _InfoLine(
+                                icon: Icons.category_outlined,
+                                text: (contact.industry != null && contact.industry!.trim().isNotEmpty)
+                                    ? contact.industry!
+                                    : (contact.jobTitle ?? '-'),
+                                iconColor: const Color(0xFF00897B),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
-                    _InfoLine(icon: Icons.call_outlined, text: contact.phone1, color: AppColors.phoneLink),
-                    if (contact.phone2 != null && contact.phone2!.trim().isNotEmpty) ...[
-                      const SizedBox(height: 6),
-                      _InfoLine(icon: Icons.phone_outlined, text: contact.phone2!, color: AppColors.textSecondary),
-                    ],
-                    if (contact.email != null && contact.email!.trim().isNotEmpty) ...[
-                      const SizedBox(height: 6),
-                      _InfoLine(icon: Icons.mail_outline, text: contact.email!, color: AppColors.textSecondary),
-                    ],
-                    if (contact.industry != null && contact.industry!.trim().isNotEmpty) ...[
-                      const SizedBox(height: 6),
-                      _InfoLine(icon: Icons.category_outlined, text: contact.industry!, color: AppColors.textSecondary),
-                    ],
-                    const SizedBox(height: 10),
-                    const Divider(height: 1),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        _Action(icon: Icons.call_outlined, label: 'Call', color: AppColors.primary, onTap: onCall),
-                        _Action(
-                          icon: Icons.chat_outlined,
-                          label: 'WhatsApp',
-                          color: const Color(0xFF128C7E),
-                          onTap: onWhatsApp,
-                        ),
-                        _Action(
-                          icon: Icons.mail_outline,
-                          label: 'Email',
-                          color: AppColors.accentBlue,
-                          onTap: onEmail,
-                        ),
-                        _Action(
-                          icon: Icons.edit_outlined,
-                          label: 'Edit',
-                          color: AppColors.accentOrange,
-                          onTap: onEdit,
-                        ),
-                      ],
+                    const SizedBox(height: 8),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Row(
+                        children: [
+                          _Pill(
+                            icon: Icons.call_outlined,
+                            label: 'Call',
+                            background: const Color(0xFFFFE4EC),
+                            foreground: AppColors.primary,
+                            flex: 3,
+                            onTap: onCall,
+                          ),
+                          const SizedBox(width: 6),
+                          _Pill(
+                            icon: Icons.chat_outlined,
+                            label: 'WhatsApp',
+                            background: const Color(0xFFE8F5E9),
+                            foreground: const Color(0xFF2E7D32),
+                            flex: 4,
+                            onTap: onWhatsApp,
+                          ),
+                          const SizedBox(width: 6),
+                          _Pill(
+                            icon: Icons.mail_outline_rounded,
+                            label: 'Email',
+                            background: const Color(0xFFE3F2FD),
+                            foreground: const Color(0xFF1565C0),
+                            flex: 3,
+                            onTap: onEmail,
+                          ),
+                          const SizedBox(width: 6),
+                          _Pill(
+                            icon: Icons.more_horiz,
+                            label: 'More',
+                            background: Colors.white,
+                            foreground: AppColors.textPrimary,
+                            flex: 3,
+                            outlined: true,
+                            onTap: onMore,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -183,32 +213,87 @@ class ContactListCard extends StatelessWidget {
   }
 }
 
+class _Avatar extends StatelessWidget {
+  final String label;
+
+  const _Avatar({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 36,
+      height: 36,
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+        color: AppColors.primary,
+        shape: BoxShape.circle,
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 13,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+    );
+  }
+}
+
+class _TypeChip extends StatelessWidget {
+  final String label;
+
+  const _TypeChip({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 120),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1565C0).withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w800,
+          color: Color(0xFF1565C0),
+        ),
+      ),
+    );
+  }
+}
+
 class _InfoLine extends StatelessWidget {
   final IconData icon;
   final String text;
-  final Color color;
+  final Color iconColor;
 
   const _InfoLine({
     required this.icon,
     required this.text,
-    required this.color,
+    required this.iconColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 15, color: color),
-        const SizedBox(width: 8),
+        Icon(icon, size: 14, color: iconColor),
+        const SizedBox(width: 5),
         Expanded(
           child: Text(
             text,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.body.copyWith(
-              color: color,
+            style: const TextStyle(
+              fontSize: 12,
               fontWeight: FontWeight.w600,
-              fontSize: 13,
+              color: AppColors.textPrimary,
             ),
           ),
         ),
@@ -217,42 +302,63 @@ class _InfoLine extends StatelessWidget {
   }
 }
 
-class _Action extends StatelessWidget {
+class _Pill extends StatelessWidget {
   final IconData icon;
   final String label;
-  final Color color;
+  final Color background;
+  final Color foreground;
   final VoidCallback onTap;
+  final int flex;
+  final bool outlined;
 
-  const _Action({
+  const _Pill({
     required this.icon,
     required this.label,
-    required this.color,
+    required this.background,
+    required this.foreground,
     required this.onTap,
+    this.flex = 3,
+    this.outlined = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Column(
-            children: [
-              Icon(icon, size: 22, color: color),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.caption.copyWith(
-                  color: color,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 11,
-                ),
+      flex: flex,
+      child: Material(
+        color: background,
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            height: 28,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: outlined ? Border.all(color: const Color(0xFFE5E7EB)) : null,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, size: 14, color: foreground),
+                  const SizedBox(width: 4),
+                  Text(
+                    label,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      color: foreground,
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

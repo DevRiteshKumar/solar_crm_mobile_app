@@ -49,12 +49,18 @@ class ProPageHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: AppTextStyles.heading2.copyWith(fontSize: 26, fontWeight: FontWeight.w800),
+                OneLineTitle(
+                  text: title,
+                  style: AppTextStyles.heading2.copyWith(fontSize: 24, fontWeight: FontWeight.w800, height: 1.15),
+                  minFontSize: 15,
                 ),
                 if (subtitle != null)
-                  Text(subtitle!, style: AppTextStyles.caption.copyWith(color: AppColors.textHint)),
+                  Text(
+                    subtitle!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
+                  ),
               ],
             ),
           ),
@@ -89,6 +95,50 @@ class ProPageHeader extends StatelessWidget {
             ),
         ],
       ),
+    );
+  }
+}
+
+class OneLineTitle extends StatelessWidget {
+  final String text;
+  final TextStyle style;
+  final double minFontSize;
+
+  const OneLineTitle({
+    super.key,
+    required this.text,
+    required this.style,
+    this.minFontSize = 14,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxWidth = constraints.maxWidth;
+        if (!maxWidth.isFinite || maxWidth <= 0) {
+          return Text(text, maxLines: 1, overflow: TextOverflow.ellipsis, style: style);
+        }
+
+        var fontSize = style.fontSize ?? 22;
+        final min = minFontSize;
+        while (fontSize > min) {
+          final painter = TextPainter(
+            text: TextSpan(text: text, style: style.copyWith(fontSize: fontSize, height: 1.15)),
+            maxLines: 1,
+            textDirection: TextDirection.ltr,
+          )..layout(maxWidth: maxWidth);
+          if (!painter.didExceedMaxLines && painter.width <= maxWidth) break;
+          fontSize -= 1;
+        }
+
+        return Text(
+          text,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: style.copyWith(fontSize: fontSize, height: 1.15),
+        );
+      },
     );
   }
 }
