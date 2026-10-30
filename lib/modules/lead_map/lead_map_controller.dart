@@ -152,29 +152,35 @@ class LeadMapController extends GetxController {
     return false;
   }
 
-  void callLead(Lead lead) {
-    if (Get.isRegistered<LeadsController>()) {
-      Get.find<LeadsController>().callLead(lead);
+  LeadsController? get _leads =>
+      Get.isRegistered<LeadsController>() ? Get.find<LeadsController>() : null;
+
+  void callLead(Lead lead) => _leads?.callLead(lead);
+
+  void navigateToLead(Lead lead) => _leads?.navigateToLead(lead);
+
+  void editLead(Lead lead) => _leads?.editLead(lead);
+
+  void cloneLead(Lead lead) => _leads?.cloneLead(lead);
+
+  void openLeadItems(Lead lead, String type) => _leads?.openLeadItems(lead, type);
+
+  void openLeadDetail(Lead lead, {int tab = 0}) => _leads?.openLeadDetail(lead, tab: tab);
+
+  void replaceLead(Lead lead) {
+    final index = allLeads.indexWhere((l) => l.id == lead.id);
+    if (index >= 0) allLeads[index] = lead;
+  }
+
+  Future<void> patchLead(Lead lead) async {
+    replaceLead(lead);
+    if (_leads != null) {
+      await _leads!.patchLead(lead);
+    } else {
+      await _repository.updateLead(lead);
     }
   }
 
-  void whatsappLead(Lead lead) {
-    if (Get.isRegistered<LeadsController>()) {
-      Get.find<LeadsController>().whatsappLead(lead);
-    }
-  }
-
-  void navigateToLead(Lead lead) {
-    if (Get.isRegistered<LeadsController>()) {
-      Get.find<LeadsController>().navigateToLead(lead);
-    }
-  }
-
-  void checkInLead(Lead lead) {
-    if (Get.isRegistered<LeadsController>()) {
-      Get.find<LeadsController>().checkInLead(lead);
-      allLeads.refresh();
-    }
-  }
+  void confirmDelete(Lead lead) => _leads?.confirmDelete(lead);
 
 }

@@ -9,7 +9,7 @@ class LoginController extends GetxController {
 
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController(text: 'shreeshahegde@gmail.com');
-  final passwordController = TextEditingController();
+  final passwordController = TextEditingController(text: 'password');
 
   final isLoading = false.obs;
   final obscurePassword = true.obs;

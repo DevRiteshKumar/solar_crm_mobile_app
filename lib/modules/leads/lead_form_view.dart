@@ -4,7 +4,9 @@ import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_text_styles.dart';
 import '../../core/widgets/app_button.dart';
 import '../../core/widgets/app_text_field.dart';
+import '../../core/widgets/lead_field_dropdowns.dart';
 import '../../core/widgets/pro_ui.dart';
+import '../../data/models/lead.dart';
 import 'lead_form_controller.dart';
 
 class LeadFormView extends GetView<LeadFormController> {
@@ -91,25 +93,25 @@ class LeadFormView extends GetView<LeadFormController> {
                       onToggle: () => controller.detailsExpanded.toggle(),
                       child: Column(
                         children: [
-                          _ChipPicker(
-                            label: 'Status',
-                            options: LeadFormController.statuses,
-                            selected: controller.status.value,
-                            onSelected: (v) => controller.status.value = v,
-                          ),
-                          const SizedBox(height: 14),
-                          _ChipPicker(
-                            label: 'Priority',
-                            options: LeadFormController.priorities,
-                            selected: controller.priority.value,
-                            onSelected: (v) => controller.priority.value = v,
-                          ),
-                          const SizedBox(height: 14),
-                          AppTextField(
-                            label: 'Next Step',
-                            controller: controller.nextStep,
-                            outlined: true,
-                            hint: 'e.g. Site Survey',
+                          LeadFieldDropdowns(
+                            compact: false,
+                            lead: Lead(
+                              id: controller.editing?.id ?? '',
+                              customerName: controller.customerName.text,
+                              businessName: controller.businessName.text,
+                              phone: controller.phone.text,
+                              leadType: controller.leadType.value,
+                              status: controller.status.value,
+                              priority: controller.priority.value,
+                              source: controller.source.value,
+                              nextStep: controller.nextStepValue.value,
+                            ),
+                            onChanged: (lead) {
+                              controller.status.value = lead.status;
+                              controller.priority.value = lead.priority;
+                              controller.source.value = lead.source;
+                              controller.nextStepValue.value = lead.nextStep ?? '';
+                            },
                           ),
                           const SizedBox(height: 12),
                           AppTextField(

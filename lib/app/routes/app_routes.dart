@@ -9,8 +9,10 @@ class AppRoutes {
   static const String dashboard = '/dashboard';
   static const String leads = '/leads';
   static const String leadForm = '/lead-form';
+  static const String leadDetail = '/lead-detail';
   static const String leadMap = '/lead-map';
   static const String referrals = '/referrals';
+  static const String referralLeads = '/referral-leads';
   static const String contacts = '/contacts';
   static const String contactForm = '/contacts/form';
   static const String quotation = '/quotation';

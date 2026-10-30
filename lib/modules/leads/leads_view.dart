@@ -4,6 +4,7 @@ import '../../app/routes/app_routes.dart';
 import '../../app/theme/app_colors.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/lead_list_card.dart';
+import '../../core/widgets/lead_summary_bar.dart';
 import '../../core/widgets/loading_view.dart';
 import '../../core/widgets/pro_ui.dart';
 import '../shell/shell_controller.dart';
@@ -20,7 +21,7 @@ class LeadsView extends GetView<LeadsController> {
         children: [
           Obx(
             () => ProPageHeader(
-              title: 'Leads',
+              title: controller.pageTitle,
               subtitle: '${controller.leads.length} total',
               onMenu: () => Get.find<ShellController>().openDrawer(),
               onSearch: controller.toggleSearch,
@@ -40,67 +41,16 @@ class LeadsView extends GetView<LeadsController> {
               },
             );
           }),
-          const SizedBox(height: 12),
           Obx(
-            () => ProStatsRow(
-              stats: [
-                ProStatCard(
-                  icon: Icons.calendar_today_outlined,
-                  value: '${controller.dueToday}',
-                  label: 'Due today',
-                ),
-                ProStatCard(
-                  icon: Icons.flag_outlined,
-                  value: '${controller.needsAttention}',
-                  label: 'Needs attention',
-                ),
-                ProStatCard(
-                  icon: Icons.person_add_alt_1_outlined,
-                  value: '${controller.thisWeek}',
-                  label: 'This week',
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 14),
-          Obx(
-            () => ProFilterChips(
-              filters: controller.filters.toList(),
-              selected: controller.selectedFilter.value,
-              onSelected: controller.selectFilter,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Obx(() {
-            if (controller.customFilters.isEmpty) return const SizedBox.shrink();
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                  child: Text(
-                    'Custom Filters',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ),
-                ProFilterChips(
-                  filters: controller.customFilters.toList(),
-                  selected: controller.selectedFilter.value,
-                  onSelected: controller.selectFilter,
-                ),
-              ],
-            );
-          }),
-          const SizedBox(height: 8),
-          Obx(
-            () => ProSortFilterBar(
-              sortLabel: controller.sortLabel.value,
-              onSort: controller.showSortOptions,
-              onFilters: controller.showFiltersSheet,
+            () => LeadSummaryBar(
+              dueToday: controller.dueToday,
+              needsAttention: controller.needsAttention,
+              thisWeek: controller.thisWeek,
+              totalLeads: controller.totalLeads,
+              selectedFilter: controller.selectedFilter.value,
+              customFilters: controller.customFilters.toList(),
+              onFilterSelected: controller.selectFilter,
+              onMore: controller.showFiltersSheet,
             ),
           ),
           Expanded(
@@ -111,7 +61,7 @@ class LeadsView extends GetView<LeadsController> {
                 onRefresh: controller.load,
                 color: AppColors.primary,
                 child: ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 96),
                   itemCount: controller.leads.length,
                   itemBuilder: (context, index) {
                     final lead = controller.leads[index];
@@ -120,13 +70,18 @@ class LeadsView extends GetView<LeadsController> {
                       lead: lead,
                       showIndex: false,
                       showNextStep: false,
-                      showPhone: false,
                       checkedIn: controller.checkedInIds.contains(lead.id),
+                      onTap: () => controller.openLeadDetail(lead),
+                      onUpdate: controller.patchLead,
                       onMore: () => controller.showLeadActions(lead),
                       onCall: () => controller.callLead(lead),
-                      onWhatsApp: () => controller.whatsappLead(lead),
                       onNavigate: () => controller.navigateToLead(lead),
-                      onCheckIn: () => controller.checkInLead(lead),
+                      onEdit: () => controller.editLead(lead),
+                      onClone: () => controller.cloneLead(lead),
+                      onTasks: () => controller.openLeadItems(lead, 'Tasks'),
+                      onNotes: () => controller.openLeadItems(lead, 'Notes'),
+                      onFiles: () => controller.openLeadItems(lead, 'Files'),
+                      onDelete: () => controller.confirmDelete(lead),
                     );
                   },
                 ),

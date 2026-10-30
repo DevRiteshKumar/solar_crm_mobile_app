@@ -17,15 +17,41 @@ class ShellController extends GetxController {
   );
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final leadsExpanded = false.obs;
-  final customFiltersExpanded = false.obs;
+  final leadsExpanded = true.obs;
+  final customFiltersExpanded = true.obs;
+  final referralLeadsExpanded = false.obs;
+  final openedRoute = ''.obs;
+
+  /// Visual nav: Leads, Contacts, Home, Map, More
+  int get navIndex {
+    switch (currentIndex.value) {
+      case 1:
+        return 0;
+      case 2:
+        return 1;
+      default:
+        return 2;
+    }
+  }
 
   void changeTab(int index) {
-    if (index == 3) {
-      scaffoldKey.currentState?.openDrawer();
-      return;
+    switch (index) {
+      case 0:
+        currentIndex.value = 1; // Leads
+        break;
+      case 1:
+        currentIndex.value = 2; // Contacts
+        break;
+      case 2:
+        currentIndex.value = 0; // Home / Dashboard
+        break;
+      case 3:
+        Get.toNamed(AppRoutes.leadMap);
+        break;
+      case 4:
+        scaffoldKey.currentState?.openDrawer();
+        break;
     }
-    currentIndex.value = index;
   }
 
   void openDrawer() => scaffoldKey.currentState?.openDrawer();
@@ -34,16 +60,34 @@ class ShellController extends GetxController {
 
   void toggleCustomFilters() => customFiltersExpanded.toggle();
 
+  void toggleReferralLeads() => referralLeadsExpanded.toggle();
+
   void openLeads({String filter = 'All'}) {
     Get.back();
     currentIndex.value = 1;
+    leadsExpanded.value = true;
+    openedRoute.value = AppRoutes.leads;
     if (Get.isRegistered<LeadsController>()) {
       Get.find<LeadsController>().selectFilter(filter);
     }
   }
 
+  void openReferralLeads() {
+    Get.back();
+    leadsExpanded.value = true;
+    referralLeadsExpanded.value = true;
+    openedRoute.value = AppRoutes.referralLeads;
+    if (Get.currentRoute == AppRoutes.referralLeads) return;
+    Get.toNamed(AppRoutes.referralLeads)?.then((_) {
+      if (openedRoute.value == AppRoutes.referralLeads) {
+        openedRoute.value = '';
+      }
+    });
+  }
+
   void navigateFromDrawer(String route) {
-    Get.back(); // close drawer
+    Get.back();
+    openedRoute.value = route;
     switch (route) {
       case AppRoutes.dashboard:
         currentIndex.value = 0;

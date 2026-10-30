@@ -89,14 +89,15 @@ class AppDrawer extends StatelessWidget {
                   Obx(() {
                     final leadsOpen = controller.leadsExpanded.value;
                     final customOpen = controller.customFiltersExpanded.value;
-                    final onLeads = controller.currentIndex.value == 1;
+                    final referralOpen = controller.referralLeadsExpanded.value;
+                    final onReferralLeads = controller.openedRoute.value == AppRoutes.referralLeads;
+                    final onLeads = controller.currentIndex.value == 1 && !onReferralLeads;
                     final selectedFilter = Get.isRegistered<LeadsController>()
                         ? Get.find<LeadsController>().selectedFilter.value
                         : 'All';
                     final customFilters = Get.isRegistered<LeadsController>()
                         ? Get.find<LeadsController>().customFilters.toList()
                         : MockData.leadCustomFilters;
-
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -138,6 +139,23 @@ class AppDrawer extends StatelessWidget {
                                 selected: onLeads && selectedFilter == filter,
                                 onTap: () => controller.openLeads(filter: filter),
                               ),
+                            ),
+                          _nestedDotItem(
+                            label: 'Referrals',
+                            selected: false,
+                            onTap: controller.toggleReferralLeads,
+                            trailing: Icon(
+                              referralOpen ? Icons.expand_less : Icons.expand_more,
+                              size: 18,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          if (referralOpen)
+                            _nestedDotItem(
+                              label: 'Referral Leads',
+                              depth: 2,
+                              selected: onReferralLeads,
+                              onTap: controller.openReferralLeads,
                             ),
                         ],
                       ],

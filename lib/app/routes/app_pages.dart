@@ -9,12 +9,16 @@ import '../../modules/contacts/contacts_controller.dart';
 import '../../modules/dashboard/dashboard_controller.dart';
 import '../../modules/lead_map/lead_map_controller.dart';
 import '../../modules/lead_map/lead_map_view.dart';
+import '../../modules/leads/lead_detail_controller.dart';
+import '../../modules/leads/lead_detail_view.dart';
 import '../../modules/leads/lead_form_controller.dart';
 import '../../modules/leads/lead_form_view.dart';
 import '../../modules/leads/leads_controller.dart';
 import '../../modules/membership_plans/membership_plans_controller.dart';
 import '../../modules/membership_plans/membership_plans_view.dart';
 import '../../modules/placeholders/placeholder_view.dart';
+import '../../modules/referral_leads/referral_leads_controller.dart';
+import '../../modules/referral_leads/referral_leads_view.dart';
 import '../../modules/referrals/referrals_controller.dart';
 import '../../modules/referrals/referrals_view.dart';
 import '../../modules/roles/roles_controller.dart';
@@ -54,6 +58,16 @@ class AppPages {
       }),
     ),
     GetPage(
+      name: AppRoutes.leadDetail,
+      page: () => const LeadDetailView(),
+      binding: BindingsBuilder(() {
+        if (Get.isRegistered<LeadDetailController>()) {
+          Get.delete<LeadDetailController>(force: true);
+        }
+        Get.put(LeadDetailController());
+      }),
+    ),
+    GetPage(
       name: AppRoutes.leadForm,
       page: () => const LeadFormView(),
       binding: BindingsBuilder(() {
@@ -72,6 +86,16 @@ class AppPages {
       page: () => const ReferralsView(),
       binding: BindingsBuilder(() {
         Get.lazyPut(() => ReferralsController());
+      }),
+    ),
+    GetPage(
+      name: AppRoutes.referralLeads,
+      page: () => const ReferralLeadsView(),
+      binding: BindingsBuilder(() {
+        if (Get.isRegistered<ReferralLeadsController>()) {
+          Get.delete<ReferralLeadsController>(force: true);
+        }
+        Get.put(ReferralLeadsController());
       }),
     ),
     GetPage(

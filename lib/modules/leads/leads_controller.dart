@@ -5,12 +5,15 @@ import '../../app/routes/app_routes.dart';
 import '../../core/utils/launch_helpers.dart';
 import '../../data/models/lead.dart';
 import '../../data/repositories/lead_repository.dart';
+import '../dashboard/dashboard_controller.dart';
+import '../lead_map/lead_map_controller.dart';
 
 class LeadsController extends GetxController {
   final LeadRepository _repository = Get.find();
 
   final isLoading = false.obs;
   final leads = <Lead>[].obs;
+  final allLeads = <Lead>[].obs;
   final filters = <String>['All', 'Today', 'High Priority', 'Interested'].obs;
   final customFilters = <String>[].obs;
   final selectedFilter = 'All'.obs;
@@ -19,10 +22,18 @@ class LeadsController extends GetxController {
   final sortLabel = 'Last Contact'.obs;
   final checkedInIds = <String>{}.obs;
 
-  int get dueToday => leads.where((l) => l.nextStep != 'Completed').take(9).length.clamp(0, 9);
-  int get needsAttention =>
-      leads.where((l) => l.priority.toLowerCase().contains('high') || l.status == 'Interested').length;
-  int get thisWeek => leads.length.clamp(0, 3);
+  int get totalLeads => allLeads.length;
+  int get dueToday => allLeads.where((l) => l.todayVisit).length;
+  int get needsAttention => allLeads
+      .where((l) => l.priority.toLowerCase().contains('high') || l.status == 'Interested')
+      .length;
+  int get thisWeek => allLeads.where((l) => l.todayVisit || l.nextStep == 'Follow up Call').length;
+
+  String get pageTitle {
+    final filter = selectedFilter.value;
+    if (filter == 'All' || filter == 'All Leads') return 'Leads';
+    return filter;
+  }
 
   @override
   void onInit() {
@@ -40,14 +51,31 @@ class LeadsController extends GetxController {
   Future<void> load() async {
     try {
       isLoading.value = true;
-      final result = await _repository.getLeads(
-        query: searchQuery.value,
-        filter: selectedFilter.value,
-      );
-      leads.assignAll(result);
+      final all = await _repository.getLeads(query: searchQuery.value);
+      allLeads.assignAll(all);
+      leads.assignAll(applyFilter(all, selectedFilter.value));
     } finally {
       isLoading.value = false;
     }
+  }
+
+  List<Lead> applyFilter(List<Lead> source, String filter) {
+    if (filter.isEmpty || filter == 'All' || filter == 'All Leads') return source;
+    final f = filter.toLowerCase();
+    return source.where((l) {
+      if (l.tags.any((t) => t.toLowerCase() == f)) return true;
+      if (f == 'today') return l.todayVisit;
+      if (f == 'high priority' || f == 'very high priority') {
+        return l.priority.toLowerCase().contains('high');
+      }
+      if (f == 'interested' || f == 'intrested') {
+        return l.status.toLowerCase() == 'interested';
+      }
+      if (f.contains('new very high')) {
+        return l.priority.toLowerCase().contains('high') && l.todayVisit;
+      }
+      return false;
+    }).toList();
   }
 
   void toggleSearch() => showSearch.toggle();
@@ -59,13 +87,76 @@ class LeadsController extends GetxController {
 
   void selectFilter(String filter) {
     selectedFilter.value = filter;
-    load();
+    leads.assignAll(applyFilter(allLeads, filter));
   }
 
   Future<void> deleteLead(String id) async {
     await _repository.deleteLead(id);
     await load();
     Get.snackbar('Deleted', 'Lead removed', snackPosition: SnackPosition.BOTTOM);
+  }
+
+  void editLead(Lead lead) {
+    Get.toNamed(AppRoutes.leadForm, arguments: lead);
+  }
+
+  void openLeadDetail(Lead lead, {int tab = 0}) {
+    Get.toNamed(AppRoutes.leadDetail, arguments: {'lead': lead, 'tab': tab});
+  }
+
+  Future<void> patchLead(Lead lead) async {
+    final index = leads.indexWhere((l) => l.id == lead.id);
+    if (index >= 0) leads[index] = lead;
+    final allIndex = allLeads.indexWhere((l) => l.id == lead.id);
+    if (allIndex >= 0) allLeads[allIndex] = lead;
+    await _repository.updateLead(lead);
+    if (Get.isRegistered<LeadMapController>()) {
+      Get.find<LeadMapController>().replaceLead(lead);
+    }
+    if (Get.isRegistered<DashboardController>()) {
+      Get.find<DashboardController>().replaceLead(lead);
+    }
+  }
+
+  Future<void> cloneLead(Lead lead) async {
+    await _repository.createLead(
+      lead.copyWith(
+        id: '',
+        businessName: '${lead.businessName} (Copy)',
+      ),
+    );
+    await load();
+    Get.snackbar('Cloned', '${lead.businessName} duplicated', snackPosition: SnackPosition.BOTTOM);
+  }
+
+  void confirmDelete(Lead lead) {
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Delete lead?'),
+        content: Text('This will remove ${lead.businessName} from your pipeline.'),
+        actions: [
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              deleteLead(lead.id);
+            },
+            child: const Text('Delete', style: TextStyle(color: Color(0xFFC62828))),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void openLeadItems(Lead lead, String type) {
+    final tab = switch (type) {
+      'Tasks' => 1,
+      'Notes' => 2,
+      'Calls' => 3,
+      'Files' => 4,
+      _ => 0,
+    };
+    openLeadDetail(lead, tab: tab);
   }
 
   Future<void> callLead(Lead lead) async {

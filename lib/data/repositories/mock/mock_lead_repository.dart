@@ -9,11 +9,14 @@ class MockLeadRepository implements LeadRepository {
   @override
   Future<List<Lead>> getLeads({String? query, String? filter}) async {
     await Future.delayed(AppConstants.mockDelay);
-    var result = List<Lead>.from(_leads);
+    var result = _leads.map(_ensureContact).toList();
 
     if (filter != null && filter.isNotEmpty && filter != 'All' && filter != 'All Leads') {
       final f = filter.toLowerCase();
       result = result.where((l) {
+        if (f == 'referral leads' || f == 'referral lead') {
+          return l.source.toLowerCase() == 'referrals';
+        }
         if (l.tags.any((t) => t.toLowerCase() == f)) return true;
         if (f == 'today') return l.todayVisit;
         if (f == 'high priority' || f == 'very high priority') {
@@ -44,10 +47,22 @@ class MockLeadRepository implements LeadRepository {
     return result;
   }
 
+  Lead _ensureContact(Lead lead) {
+    final filled = lead.copyWith(
+      phone: lead.displayPhone,
+      email: lead.displayEmail,
+    );
+    final index = _leads.indexWhere((l) => l.id == lead.id);
+    if (index >= 0) _leads[index] = filled;
+    return filled;
+  }
+
   @override
   Future<Lead> createLead(Lead lead) async {
     await Future.delayed(AppConstants.mockDelay);
-    final created = lead.copyWith(id: DateTime.now().millisecondsSinceEpoch.toString());
+    final created = _ensureContact(
+      lead.copyWith(id: DateTime.now().millisecondsSinceEpoch.toString()),
+    );
     _leads.insert(0, created);
     return created;
   }
@@ -56,10 +71,11 @@ class MockLeadRepository implements LeadRepository {
   Future<Lead> updateLead(Lead lead) async {
     await Future.delayed(AppConstants.mockDelay);
     final index = _leads.indexWhere((l) => l.id == lead.id);
+    final filled = _ensureContact(lead);
     if (index >= 0) {
-      _leads[index] = lead;
+      _leads[index] = filled;
     }
-    return lead;
+    return filled;
   }
 
   @override

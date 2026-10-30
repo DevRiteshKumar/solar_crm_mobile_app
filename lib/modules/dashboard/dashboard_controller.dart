@@ -87,6 +87,26 @@ class DashboardController extends GetxController {
     Get.toNamed(AppRoutes.leadForm);
   }
 
+  void replaceLead(Lead lead) {
+    final current = stats.value;
+    if (current == null) return;
+    List<Lead> swap(List<Lead> list) => list.map((l) => l.id == lead.id ? lead : l).toList();
+    stats.value = DashboardStats(
+      totalLeads: current.totalLeads,
+      totalContacts: current.totalContacts,
+      totalReferrers: current.totalReferrers,
+      totalTasks: current.totalTasks,
+      userName: current.userName,
+      planExpiryMessage: current.planExpiryMessage,
+      leadsByStatus: swap(current.leadsByStatus),
+      leadsByPriority: swap(current.leadsByPriority),
+      leadOverview: swap(current.leadOverview),
+      leadFinancials: swap(current.leadFinancials),
+      leadsByNextStep: swap(current.leadsByNextStep).where((l) => l.nextStep != 'Completed').toList(),
+      leadsCompleted: swap(current.leadsCompleted).where((l) => l.nextStep == 'Completed').toList(),
+    );
+  }
+
   void extendTrial() {
     Get.snackbar(
       'Extend Free Trial',

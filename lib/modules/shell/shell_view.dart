@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../app/theme/app_colors.dart';
+import '../../core/widgets/bubble_bottom_nav.dart';
 import '../contacts/contacts_view.dart';
 import '../dashboard/dashboard_view.dart';
 import '../leads/leads_view.dart';
@@ -26,34 +26,17 @@ class ShellView extends GetView<ShellController> {
           index: controller.currentIndex.value.clamp(0, 2),
           children: pages,
         ),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: controller.currentIndex.value.clamp(0, 2),
-          onDestinationSelected: controller.changeTab,
-          backgroundColor: AppColors.surface,
-          indicatorColor: AppColors.drawerActiveBg,
-          elevation: 8,
-          shadowColor: Colors.black12,
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.dashboard_outlined),
-              selectedIcon: Icon(Icons.dashboard, color: AppColors.primary),
-              label: 'Dashboard',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.gps_fixed_outlined),
-              selectedIcon: Icon(Icons.gps_fixed, color: AppColors.primary),
-              label: 'Leads',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.people_outline),
-              selectedIcon: Icon(Icons.people, color: AppColors.primary),
-              label: 'Contacts',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.menu),
-              selectedIcon: Icon(Icons.menu, color: AppColors.primary),
-              label: 'More',
-            ),
+        extendBody: true,
+        backgroundColor: const Color(0xFFF7F8FA),
+        bottomNavigationBar: BubbleBottomNav(
+          currentIndex: controller.navIndex,
+          onTap: controller.changeTab,
+          items: const [
+            BubbleNavItem(icon: Icons.gps_fixed, label: 'Leads'),
+            BubbleNavItem(icon: Icons.people_rounded, label: 'Contacts'),
+            BubbleNavItem(icon: Icons.dashboard_rounded, label: 'Home'),
+            BubbleNavItem(icon: Icons.map_outlined, label: 'Map'),
+            BubbleNavItem(icon: Icons.menu, label: 'More'),
           ],
         ),
       ),

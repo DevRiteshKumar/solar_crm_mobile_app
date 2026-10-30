@@ -5,6 +5,7 @@ import '../../data/models/lead.dart';
 import '../../data/repositories/lead_repository.dart';
 import '../dashboard/dashboard_controller.dart';
 import '../lead_map/lead_map_controller.dart';
+import '../referral_leads/referral_leads_controller.dart';
 import 'leads_controller.dart';
 
 class LeadFormController extends GetxController {
@@ -22,18 +23,17 @@ class LeadFormController extends GetxController {
   final businessName = TextEditingController();
   final phone = TextEditingController();
   final email = TextEditingController();
-  final nextStep = TextEditingController();
   final price = TextEditingController();
   final address = TextEditingController();
 
   final leadType = 'Residential'.obs;
   final status = 'Interested'.obs;
   final priority = 'Medium'.obs;
+  final source = 'Website'.obs;
+  final nextStepValue = 'Follow up Call'.obs;
   final todayVisit = false.obs;
 
   static const leadTypes = ['Residential', 'Commercial', 'Industrial'];
-  static const statuses = ['Interested', 'Qualified', 'Quotation Sent', 'Deal Confirmed'];
-  static const priorities = ['High', 'Medium', 'Low'];
 
   bool get isEdit => editing != null;
 
@@ -47,12 +47,13 @@ class LeadFormController extends GetxController {
       businessName.text = arg.businessName;
       phone.text = arg.phone;
       email.text = arg.email ?? '';
-      nextStep.text = arg.nextStep ?? '';
+      nextStepValue.value = arg.nextStep ?? 'Follow up Call';
       price.text = arg.price != null ? arg.price!.toStringAsFixed(0) : '';
       address.text = arg.address ?? '';
       leadType.value = arg.leadType.isNotEmpty ? arg.leadType : 'Residential';
       status.value = arg.status;
       priority.value = arg.priority;
+      source.value = arg.source.isNotEmpty ? arg.source : 'Website';
       todayVisit.value = arg.todayVisit;
     }
   }
@@ -67,11 +68,14 @@ class LeadFormController extends GetxController {
         customerName: customerName.text.trim(),
         businessName: businessName.text.trim(),
         phone: phone.text.trim(),
-        email: email.text.trim().isEmpty ? null : email.text.trim(),
+        email: email.text.trim().isEmpty
+            ? Lead.emailFromName(customerName.text.trim().isNotEmpty ? customerName.text.trim() : businessName.text.trim())
+            : email.text.trim(),
         leadType: leadType.value,
         status: status.value,
         priority: priority.value,
-        nextStep: nextStep.text.trim().isEmpty ? null : nextStep.text.trim(),
+        source: source.value,
+        nextStep: nextStepValue.value.trim().isEmpty ? null : nextStepValue.value.trim(),
         price: parsedPrice,
         lastContact: editing?.lastContact,
         address: address.text.trim().isEmpty ? null : address.text.trim(),
@@ -95,6 +99,9 @@ class LeadFormController extends GetxController {
       }
       if (Get.isRegistered<LeadMapController>()) {
         await Get.find<LeadMapController>().load();
+      }
+      if (Get.isRegistered<ReferralLeadsController>()) {
+        await Get.find<ReferralLeadsController>().load();
       }
 
       Get.back();
@@ -125,7 +132,6 @@ class LeadFormController extends GetxController {
     businessName.dispose();
     phone.dispose();
     email.dispose();
-    nextStep.dispose();
     price.dispose();
     address.dispose();
     super.onClose();

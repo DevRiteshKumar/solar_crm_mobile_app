@@ -4,54 +4,52 @@ import '../../app/theme/app_text_styles.dart';
 
 class LeadQuickActions extends StatelessWidget {
   final VoidCallback onCall;
-  final VoidCallback onWhatsApp;
   final VoidCallback onNavigate;
-  final VoidCallback onCheckIn;
-  final bool checkedIn;
+  final VoidCallback onEdit;
+  final VoidCallback onClone;
+  final VoidCallback onTasks;
+  final VoidCallback onNotes;
+  final VoidCallback onFiles;
+  final VoidCallback onDelete;
 
   const LeadQuickActions({
     super.key,
     required this.onCall,
-    required this.onWhatsApp,
     required this.onNavigate,
-    required this.onCheckIn,
-    this.checkedIn = false,
+    required this.onEdit,
+    required this.onClone,
+    required this.onTasks,
+    required this.onNotes,
+    required this.onFiles,
+    required this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+      padding: const EdgeInsets.fromLTRB(4, 8, 4, 6),
       decoration: BoxDecoration(
-        color: AppColors.inputFill,
-        borderRadius: BorderRadius.circular(12),
+        color: const Color(0xFFF4F5F7),
+        borderRadius: BorderRadius.circular(16),
       ),
-      child: Row(
+      child: Column(
         children: [
-          _Action(
-            icon: Icons.call_outlined,
-            label: 'Call',
-            color: AppColors.primary,
-            onTap: onCall,
+          Row(
+            children: [
+              _Action(icon: Icons.call_outlined, label: 'Call', color: AppColors.primary, onTap: onCall),
+              _Action(icon: Icons.send_outlined, label: 'Navigation', color: AppColors.accentBlue, onTap: onNavigate),
+              _Action(icon: Icons.edit_outlined, label: 'Edit', color: AppColors.accentOrange, onTap: onEdit),
+              _Action(icon: Icons.check_circle_outline, label: 'Tasks', color: const Color(0xFF00897B), onTap: onTasks),
+            ],
           ),
-          _Action(
-            icon: Icons.chat_outlined,
-            label: 'WhatsApp',
-            color: const Color(0xFF128C7E),
-            onTap: onWhatsApp,
-          ),
-          _Action(
-            icon: Icons.near_me_outlined,
-            label: 'Navigate',
-            color: AppColors.accentBlue,
-            onTap: onNavigate,
-          ),
-          _Action(
-            icon: checkedIn ? Icons.check_circle : Icons.person_pin_circle_outlined,
-            label: checkedIn ? 'Checked In' : 'Check In',
-            color: checkedIn ? AppColors.success : AppColors.accentOrange,
-            filled: checkedIn,
-            onTap: onCheckIn,
+          const SizedBox(height: 2),
+          Row(
+            children: [
+              _Action(icon: Icons.sticky_note_2_outlined, label: 'Notes', color: const Color(0xFFF57C00), onTap: onNotes),
+              _Action(icon: Icons.folder_outlined, label: 'Files', color: const Color(0xFF3949AB), onTap: onFiles),
+              _Action(icon: Icons.delete_outline, label: 'Delete', color: AppColors.primary, onTap: onDelete),
+              _Action(icon: Icons.filter_none_outlined, label: 'Clone', color: AppColors.accentPurple, onTap: onClone),
+            ],
           ),
         ],
       ),
@@ -64,14 +62,12 @@ class _Action extends StatelessWidget {
   final String label;
   final Color color;
   final VoidCallback onTap;
-  final bool filled;
 
   const _Action({
     required this.icon,
     required this.label,
     required this.color,
     required this.onTap,
-    this.filled = false,
   });
 
   @override
@@ -81,20 +77,20 @@ class _Action extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(10),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
+          padding: const EdgeInsets.symmetric(vertical: 2),
           child: Column(
             children: [
               Container(
-                width: 34,
-                height: 34,
+                width: 32,
+                height: 32,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: filled ? color : color.withValues(alpha: 0.12),
+                  color: color.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, size: 17, color: filled ? Colors.white : color),
+                child: Icon(icon, size: 16, color: color),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 3),
               Text(
                 label,
                 maxLines: 1,

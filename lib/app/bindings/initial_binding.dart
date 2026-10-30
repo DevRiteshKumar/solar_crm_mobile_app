@@ -15,6 +15,7 @@ import '../../data/repositories/mock/mock_plan_repository.dart';
 import '../../data/repositories/mock/mock_referral_repository.dart';
 import '../../data/repositories/mock/mock_role_repository.dart';
 import '../../data/repositories/mock/mock_user_repository.dart';
+import '../../modules/leads/lead_options_controller.dart';
 
 class InitialBinding extends Bindings {
   @override
@@ -28,5 +29,6 @@ class InitialBinding extends Bindings {
     Get.put<UserRepository>(MockUserRepository(), permanent: true);
     Get.put<RoleRepository>(MockRoleRepository(), permanent: true);
     Get.put<PlanRepository>(MockPlanRepository(), permanent: true);
+    Get.put(LeadOptionsController(), permanent: true);
   }
 }

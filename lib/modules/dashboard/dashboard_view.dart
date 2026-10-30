@@ -5,6 +5,7 @@ import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_text_styles.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/lead_list_card.dart';
+import '../../core/widgets/lead_summary_bar.dart';
 import '../../core/widgets/loading_view.dart';
 import '../../data/models/lead.dart';
 import '../leads/leads_controller.dart';
@@ -49,7 +50,7 @@ class DashboardView extends GetView<DashboardController> {
                 onRefresh: controller.load,
                 color: AppColors.primary,
                 child: ListView(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 96),
                   children: [
                     _WelcomeBanner(
                       greeting: controller.greeting(),
@@ -105,35 +106,48 @@ class DashboardView extends GetView<DashboardController> {
                       ],
                     ),
                     const SizedBox(height: 22),
-                    Row(
-                      children: [
-                        const Expanded(child: _SectionTitle(title: 'Lead Insights')),
-                        TextButton(
-                          onPressed: () => Get.find<ShellController>().changeTab(1),
-                          style: TextButton.styleFrom(
-                            foregroundColor: AppColors.primary,
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          child: const Row(
+                    Obx(() {
+                      final leadsCtrl = Get.find<LeadsController>();
+                      final selectedFilter = leadsCtrl.selectedFilter.value;
+                      final customFilters = leadsCtrl.customFilters.toList();
+                      final sectionLeads = leadsCtrl.applyFilter(
+                        controller.leadsForSection(s),
+                        selectedFilter,
+                      );
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
                             children: [
-                              Text(
-                                'View all',
-                                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                              const Expanded(child: _SectionTitle(title: 'Lead Insights')),
+                              CustomFilterDropdown(
+                                filters: customFilters,
+                                selectedFilter: selectedFilter,
+                                onSelected: leadsCtrl.selectFilter,
                               ),
-                              SizedBox(width: 2),
-                              Icon(Icons.arrow_forward_rounded, size: 16),
+                              const SizedBox(width: 6),
+                              TextButton(
+                                onPressed: () => Get.find<ShellController>().changeTab(1),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: AppColors.primary,
+                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                  minimumSize: Size.zero,
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                child: const Row(
+                                  children: [
+                                    Text(
+                                      'View all',
+                                      style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                                    ),
+                                    SizedBox(width: 2),
+                                    Icon(Icons.arrow_forward_rounded, size: 16),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Obx(() {
-                      final sectionLeads = controller.leadsForSection(s);
-                      return Column(
-                        children: [
+                          const SizedBox(height: 10),
                           _InsightTabs(
                             tabs: DashboardController.sectionTabs,
                             selected: controller.selectedSection.value,
@@ -141,7 +155,9 @@ class DashboardView extends GetView<DashboardController> {
                           ),
                           const SizedBox(height: 12),
                           _InsightCard(
-                            title: controller.sectionTitle(),
+                            title: selectedFilter == 'All' || selectedFilter == 'All Leads'
+                                ? controller.sectionTitle()
+                                : selectedFilter,
                             count: sectionLeads.length,
                             leads: sectionLeads,
                           ),
@@ -743,13 +759,18 @@ class _InsightCard extends StatelessWidget {
                 lead: lead,
                 showIndex: false,
                 showNextStep: false,
-                showPhone: false,
                 checkedIn: leadsCtrl.checkedInIds.contains(lead.id),
+                onTap: () => leadsCtrl.openLeadDetail(lead),
+                onUpdate: leadsCtrl.patchLead,
                 onMore: () => leadsCtrl.showLeadActions(lead),
                 onCall: () => leadsCtrl.callLead(lead),
-                onWhatsApp: () => leadsCtrl.whatsappLead(lead),
                 onNavigate: () => leadsCtrl.navigateToLead(lead),
-                onCheckIn: () => leadsCtrl.checkInLead(lead),
+                onEdit: () => leadsCtrl.editLead(lead),
+                onClone: () => leadsCtrl.cloneLead(lead),
+                onTasks: () => leadsCtrl.openLeadItems(lead, 'Tasks'),
+                onNotes: () => leadsCtrl.openLeadItems(lead, 'Notes'),
+                onFiles: () => leadsCtrl.openLeadItems(lead, 'Files'),
+                onDelete: () => leadsCtrl.confirmDelete(lead),
               ),
             );
           }),

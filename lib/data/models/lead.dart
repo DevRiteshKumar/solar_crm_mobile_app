@@ -7,6 +7,7 @@ class Lead {
   final String leadType;
   final String status;
   final String priority;
+  final String source;
   final String? nextStep;
   final double? price;
   final String? lastContact;
@@ -25,6 +26,7 @@ class Lead {
     required this.leadType,
     required this.status,
     required this.priority,
+    this.source = '',
     this.nextStep,
     this.price,
     this.lastContact,
@@ -37,6 +39,31 @@ class Lead {
 
   bool get hasLocation => latitude != null && longitude != null;
 
+  String get displayPhone {
+    if (phone.trim().isNotEmpty) return phone.trim();
+    final seed = (id.hashCode.abs() % 90000000) + 10000000;
+    final raw = seed.toString();
+    return '+91 ${raw.substring(0, 5)} ${raw.substring(5)}';
+  }
+
+  String get displayEmail {
+    if (email != null && email!.trim().isNotEmpty) return email!.trim();
+    return emailFromName(customerName.isNotEmpty ? customerName : businessName);
+  }
+
+  String get displayAddress {
+    if (address != null && address!.trim().isNotEmpty) return address!.trim();
+    return 'Address not added';
+  }
+
+  static String emailFromName(String name) {
+    final local = name
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^a-z0-9]+'), '.')
+        .replaceAll(RegExp(r'^\.+|\.+$'), '');
+    return '${local.isEmpty ? 'lead' : local}@solarcrm.in';
+  }
+
   Lead copyWith({
     String? id,
     String? customerName,
@@ -46,6 +73,7 @@ class Lead {
     String? leadType,
     String? status,
     String? priority,
+    String? source,
     String? nextStep,
     double? price,
     String? lastContact,
@@ -64,6 +92,7 @@ class Lead {
       leadType: leadType ?? this.leadType,
       status: status ?? this.status,
       priority: priority ?? this.priority,
+      source: source ?? this.source,
       nextStep: nextStep ?? this.nextStep,
       price: price ?? this.price,
       lastContact: lastContact ?? this.lastContact,
