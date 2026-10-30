@@ -10,6 +10,7 @@ import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/lead_list_card.dart';
 import '../../core/widgets/loading_view.dart';
 import '../../core/widgets/pro_ui.dart';
+import '../shell/shell_controller.dart';
 import 'lead_map_controller.dart';
 
 class LeadMapView extends GetView<LeadMapController> {
@@ -23,7 +24,10 @@ class LeadMapView extends GetView<LeadMapController> {
         children: [
           ProPageHeader(
             title: 'Lead Map',
-            showBack: true,
+            onMenu: Get.isRegistered<ShellController>()
+                ? () => Get.find<ShellController>().openDrawer()
+                : null,
+            showBack: !Get.isRegistered<ShellController>(),
             onSearch: () => Get.snackbar('Search', 'Map search coming soon', snackPosition: SnackPosition.BOTTOM),
             onFilter: controller.fitBounds,
             onAdd: () => Get.toNamed(AppRoutes.leadForm),
@@ -240,7 +244,7 @@ class LeadMapView extends GetView<LeadMapController> {
                         return const EmptyState(message: 'No leads on map');
                       }
                       return ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(14, 10, 14, 16),
+                        padding: const EdgeInsets.fromLTRB(14, 10, 14, 108),
                         itemCount: leads.length,
                         itemBuilder: (context, index) {
                           final lead = leads[index];

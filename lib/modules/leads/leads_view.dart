@@ -26,7 +26,7 @@ class LeadsView extends GetView<LeadsController> {
               onMenu: () => Get.find<ShellController>().openDrawer(),
               onSearch: controller.toggleSearch,
               onFilter: controller.showFiltersSheet,
-              onMap: () => Get.toNamed(AppRoutes.leadMap),
+              onMap: () => Get.find<ShellController>().showMap(),
               onAdd: () => Get.toNamed(AppRoutes.leadForm),
             ),
           ),

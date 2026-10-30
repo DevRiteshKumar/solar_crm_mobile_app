@@ -64,85 +64,79 @@ class ContactListCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _Avatar(label: _initials(contact.fullName)),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
                           children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    contact.fullName,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: AppTextStyles.bodyMedium.copyWith(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w800,
-                                      height: 1.2,
-                                      color: AppColors.ink,
-                                    ),
-                                  ),
+                            Expanded(
+                              child: Text(
+                                contact.fullName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                  height: 1.2,
+                                  color: AppColors.ink,
                                 ),
-                                if (_chipLabel.isNotEmpty) ...[
-                                  const SizedBox(width: 6),
-                                  _TypeChip(label: _chipLabel),
-                                ],
-                              ],
+                              ),
                             ),
-                            const SizedBox(height: 6),
-                            Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: _InfoLine(
-                                        icon: Icons.call_outlined,
-                                        text: contact.phone1,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: _InfoLine(
-                                        icon: Icons.mail_outline_rounded,
-                                        text: (contact.email != null && contact.email!.trim().isNotEmpty)
-                                            ? contact.email!
-                                            : '-',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: _InfoLine(
-                                        icon: Icons.location_on_outlined,
-                                        text: _address,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: _InfoLine(
-                                        icon: Icons.category_outlined,
-                                        text: (contact.industry != null && contact.industry!.trim().isNotEmpty)
-                                            ? contact.industry!
-                                            : (contact.jobTitle ?? '-'),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                            if (_chipLabel.isNotEmpty) ...[
+                              const SizedBox(width: 6),
+                              _TypeChip(label: _chipLabel),
+                            ],
                           ],
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 8),
-                        child: Icon(Icons.chevron_right_rounded, size: 20, color: AppColors.textHint),
+                      const Icon(Icons.chevron_right_rounded, size: 20, color: AppColors.textHint),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 4,
+                            child: _InfoLine(
+                              icon: Icons.call_outlined,
+                              text: contact.phone1,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            flex: 6,
+                            child: _InfoLine(
+                              icon: Icons.mail_outline_rounded,
+                              text: (contact.email != null && contact.email!.trim().isNotEmpty)
+                                  ? contact.email!
+                                  : '-',
+                              shrink: true,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _InfoLine(
+                              icon: Icons.location_on_outlined,
+                              text: _address,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: _InfoLine(
+                              icon: Icons.category_outlined,
+                              text: (contact.industry != null && contact.industry!.trim().isNotEmpty)
+                                  ? contact.industry!
+                                  : (contact.jobTitle ?? '-'),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -266,27 +260,39 @@ class _TypeChip extends StatelessWidget {
 class _InfoLine extends StatelessWidget {
   final IconData icon;
   final String text;
+  final bool shrink;
 
-  const _InfoLine({required this.icon, required this.text});
+  const _InfoLine({
+    required this.icon,
+    required this.text,
+    this.shrink = false,
+  });
 
   @override
   Widget build(BuildContext context) {
+    const style = TextStyle(
+      fontSize: 11,
+      fontWeight: FontWeight.w500,
+      height: 1.25,
+      color: AppColors.textSecondary,
+    );
     return Row(
       children: [
         Icon(icon, size: 13, color: AppColors.textSecondary),
         const SizedBox(width: 4),
         Expanded(
-          child: Text(
-            text,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-              height: 1.25,
-              color: AppColors.textSecondary,
-            ),
-          ),
+          child: shrink
+              ? FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(text, maxLines: 1, style: style),
+                )
+              : Text(
+                  text,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: style,
+                ),
         ),
       ],
     );

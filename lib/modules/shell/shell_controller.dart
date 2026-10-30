@@ -22,13 +22,18 @@ class ShellController extends GetxController {
   final referralLeadsExpanded = false.obs;
   final openedRoute = ''.obs;
 
-  /// Visual nav: Leads, Contacts, Home, Map, More
+  /// Pages: 0 Home, 1 Leads, 2 Contacts, 3 Map
+  /// Visual nav: Contacts, Leads, Home, Map, More
   int get navIndex {
     switch (currentIndex.value) {
+      case 0:
+        return 2; // Home
       case 1:
-        return 0;
+        return 1; // Leads
       case 2:
-        return 1;
+        return 0; // Contacts
+      case 3:
+        return 3; // Map
       default:
         return 2;
     }
@@ -37,21 +42,38 @@ class ShellController extends GetxController {
   void changeTab(int index) {
     switch (index) {
       case 0:
-        currentIndex.value = 1; // Leads
+        showContacts();
         break;
       case 1:
-        currentIndex.value = 2; // Contacts
+        showLeads();
         break;
       case 2:
-        currentIndex.value = 0; // Home / Dashboard
+        showHome();
         break;
       case 3:
-        Get.toNamed(AppRoutes.leadMap);
+        showMap();
         break;
       case 4:
         scaffoldKey.currentState?.openDrawer();
         break;
     }
+  }
+
+  void showHome() => currentIndex.value = 0;
+
+  void showLeads() {
+    currentIndex.value = 1;
+    openedRoute.value = AppRoutes.leads;
+  }
+
+  void showContacts() {
+    currentIndex.value = 2;
+    openedRoute.value = AppRoutes.contacts;
+  }
+
+  void showMap() {
+    currentIndex.value = 3;
+    openedRoute.value = AppRoutes.leadMap;
   }
 
   void openDrawer() => scaffoldKey.currentState?.openDrawer();
@@ -64,9 +86,8 @@ class ShellController extends GetxController {
 
   void openLeads({String filter = 'All'}) {
     Get.back();
-    currentIndex.value = 1;
+    showLeads();
     leadsExpanded.value = true;
-    openedRoute.value = AppRoutes.leads;
     if (Get.isRegistered<LeadsController>()) {
       Get.find<LeadsController>().selectFilter(filter);
     }
@@ -90,13 +111,16 @@ class ShellController extends GetxController {
     openedRoute.value = route;
     switch (route) {
       case AppRoutes.dashboard:
-        currentIndex.value = 0;
+        showHome();
         break;
       case AppRoutes.leads:
-        currentIndex.value = 1;
+        showLeads();
         break;
       case AppRoutes.contacts:
-        currentIndex.value = 2;
+        showContacts();
+        break;
+      case AppRoutes.leadMap:
+        showMap();
         break;
       default:
         Get.toNamed(route);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../app/theme/app_colors.dart';
 import '../../core/widgets/contact_list_card.dart';
+import '../../core/widgets/contact_summary_bar.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/loading_view.dart';
 import '../../core/widgets/pro_ui.dart';
@@ -20,7 +21,7 @@ class ContactsView extends GetView<ContactsController> {
           Obx(
             () => ProPageHeader(
               title: 'Contacts',
-              subtitle: '${controller.contacts.length} total',
+              subtitle: '${controller.totalContacts} total',
               onMenu: () => Get.find<ShellController>().openDrawer(),
               onSearch: controller.toggleSearch,
               onAdd: controller.openAdd,
@@ -37,41 +38,14 @@ class ContactsView extends GetView<ContactsController> {
               },
             );
           }),
-          const SizedBox(height: 8),
           Obx(
-            () => ProStatsRow(
-              stats: [
-                ProStatCard(
-                  icon: Icons.people_outline,
-                  value: '${controller.contacts.length}',
-                  label: 'All contacts',
-                ),
-                const ProStatCard(
-                  icon: Icons.business_outlined,
-                  value: '2',
-                  label: 'With company',
-                ),
-                const ProStatCard(
-                  icon: Icons.mail_outline,
-                  value: '1',
-                  label: 'With email',
-                ),
-              ],
+            () => ContactSummaryBar(
+              totalContacts: controller.totalContacts,
+              withCompany: controller.withCompany,
+              withEmail: controller.withEmail,
+              selectedFilter: controller.selectedFilter.value,
+              onFilterSelected: controller.selectFilter,
             ),
-          ),
-          const SizedBox(height: 10),
-          Obx(
-            () => ProFilterChips(
-              filters: const ['All', 'Recent', 'With Email'],
-              selected: controller.selectedFilter.value,
-              onSelected: controller.selectFilter,
-            ),
-          ),
-          const SizedBox(height: 8),
-          ProSortFilterBar(
-            sortLabel: 'Name',
-            onSort: () {},
-            onFilters: () {},
           ),
           Expanded(
             child: Obx(() {

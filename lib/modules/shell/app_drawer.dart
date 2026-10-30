@@ -157,11 +157,14 @@ class AppDrawer extends StatelessWidget {
                       ],
                     );
                   }),
-                  _item(
-                    icon: Icons.map_outlined,
-                    label: 'Lead Map',
-                    route: AppRoutes.leadMap,
-                    onTap: () => controller.navigateFromDrawer(AppRoutes.leadMap),
+                  Obx(
+                    () => _item(
+                      icon: Icons.map_outlined,
+                      label: 'Lead Map',
+                      route: AppRoutes.leadMap,
+                      selected: controller.currentIndex.value == 3,
+                      onTap: () => controller.navigateFromDrawer(AppRoutes.leadMap),
+                    ),
                   ),
                   _item(
                     icon: Icons.person_add_alt_1_outlined,

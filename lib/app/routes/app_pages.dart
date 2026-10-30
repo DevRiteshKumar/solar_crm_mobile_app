@@ -55,6 +55,7 @@ class AppPages {
         Get.lazyPut(() => DashboardController());
         Get.lazyPut(() => LeadsController());
         Get.lazyPut(() => ContactsController());
+        Get.lazyPut(() => LeadMapController(), fenix: true);
       }),
     ),
     GetPage(

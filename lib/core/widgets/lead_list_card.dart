@@ -72,7 +72,6 @@ class LeadListCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _LeadAvatar(
                         label: showIndex ? '$index' : _initials(name),
@@ -81,45 +80,37 @@ class LeadListCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
                           children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    name,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: AppTextStyles.bodyMedium.copyWith(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w800,
-                                      height: 1.2,
-                                      color: AppColors.ink,
-                                    ),
-                                  ),
+                            Expanded(
+                              child: Text(
+                                name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                  height: 1.2,
+                                  color: AppColors.ink,
                                 ),
-                                if (lead.leadType.trim().isNotEmpty) ...[
-                                  const SizedBox(width: 6),
-                                  _LeadTypeChip(type: lead.leadType),
-                                ],
-                              ],
+                              ),
                             ),
-                            const SizedBox(height: 6),
-                            _ContactGrid(
-                              phone: lead.displayPhone,
-                              email: lead.displayEmail,
-                              address: lead.displayAddress,
-                              lastContact: lead.lastContact,
-                            ),
+                            if (lead.leadType.trim().isNotEmpty) ...[
+                              const SizedBox(width: 6),
+                              _LeadTypeChip(type: lead.leadType),
+                            ],
                           ],
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 8),
-                        child: Icon(Icons.chevron_right_rounded, size: 20, color: AppColors.textHint),
-                      ),
+                      const Icon(Icons.chevron_right_rounded, size: 20, color: AppColors.textHint),
                     ],
+                  ),
+                  const SizedBox(height: 8),
+                  _ContactGrid(
+                    phone: lead.displayPhone,
+                    email: lead.displayEmail,
+                    address: lead.displayAddress,
+                    lastContact: lead.lastContact,
                   ),
                   if (onUpdate != null) ...[
                     const SizedBox(height: 8),
@@ -176,11 +167,17 @@ class _ContactGrid extends StatelessWidget {
         Row(
           children: [
             Expanded(
+              flex: 4,
               child: _InfoLine(icon: Icons.call_outlined, text: phone),
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: _InfoLine(icon: Icons.mail_outline_rounded, text: email),
+              flex: 6,
+              child: _InfoLine(
+                icon: Icons.mail_outline_rounded,
+                text: email,
+                shrink: true,
+              ),
             ),
           ],
         ),
@@ -207,27 +204,39 @@ class _ContactGrid extends StatelessWidget {
 class _InfoLine extends StatelessWidget {
   final IconData icon;
   final String text;
+  final bool shrink;
 
-  const _InfoLine({required this.icon, required this.text});
+  const _InfoLine({
+    required this.icon,
+    required this.text,
+    this.shrink = false,
+  });
 
   @override
   Widget build(BuildContext context) {
+    const style = TextStyle(
+      fontSize: 11,
+      fontWeight: FontWeight.w500,
+      height: 1.25,
+      color: AppColors.textSecondary,
+    );
     return Row(
       children: [
         Icon(icon, size: 13, color: AppColors.textSecondary),
         const SizedBox(width: 4),
         Expanded(
-          child: Text(
-            text,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-              height: 1.25,
-              color: AppColors.textSecondary,
-            ),
-          ),
+          child: shrink
+              ? FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(text, maxLines: 1, style: style),
+                )
+              : Text(
+                  text,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: style,
+                ),
         ),
       ],
     );

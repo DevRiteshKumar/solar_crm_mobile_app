@@ -11,8 +11,17 @@ class ContactsController extends GetxController {
 
   final isLoading = false.obs;
   final contacts = <Contact>[].obs;
+  final allContacts = <Contact>[].obs;
   final showSearch = false.obs;
   final selectedFilter = 'All'.obs;
+  final searchQuery = ''.obs;
+
+  int get totalContacts => allContacts.length;
+  int get withCompany => allContacts
+      .where((c) => c.companyName != null && c.companyName!.trim().isNotEmpty)
+      .length;
+  int get withEmail =>
+      allContacts.where((c) => c.email != null && c.email!.trim().isNotEmpty).length;
 
   @override
   void onInit() {
@@ -24,17 +33,29 @@ class ContactsController extends GetxController {
 
   void selectFilter(String f) {
     selectedFilter.value = f;
-    load();
+    contacts.assignAll(_applyFilter(allContacts, f));
+  }
+
+  List<Contact> _applyFilter(List<Contact> source, String filter) {
+    switch (filter) {
+      case 'With Company':
+        return source
+            .where((c) => c.companyName != null && c.companyName!.trim().isNotEmpty)
+            .toList();
+      case 'With Email':
+        return source.where((c) => c.email != null && c.email!.trim().isNotEmpty).toList();
+      default:
+        return List.from(source);
+    }
   }
 
   Future<void> load({String? query}) async {
     try {
       isLoading.value = true;
-      var list = await _repository.getContacts(query: query);
-      if (selectedFilter.value == 'With Email') {
-        list = list.where((c) => c.email != null && c.email!.isNotEmpty).toList();
-      }
-      contacts.assignAll(list);
+      if (query != null) searchQuery.value = query;
+      final list = await _repository.getContacts(query: searchQuery.value);
+      allContacts.assignAll(list);
+      contacts.assignAll(_applyFilter(list, selectedFilter.value));
     } finally {
       isLoading.value = false;
     }

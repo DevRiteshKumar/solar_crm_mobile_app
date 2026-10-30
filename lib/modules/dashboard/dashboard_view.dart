@@ -116,7 +116,7 @@ class DashboardView extends GetView<DashboardController> {
                             children: [
                               const Expanded(child: _SectionTitle(title: 'Lead Insights')),
                               TextButton(
-                                onPressed: () => Get.find<ShellController>().changeTab(1),
+                                onPressed: () => Get.find<ShellController>().showLeads(),
                                 style: TextButton.styleFrom(
                                   foregroundColor: AppColors.primary,
                                   padding: const EdgeInsets.symmetric(horizontal: 8),

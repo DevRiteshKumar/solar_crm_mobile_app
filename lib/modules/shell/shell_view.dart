@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../core/widgets/bubble_bottom_nav.dart';
 import '../contacts/contacts_view.dart';
 import '../dashboard/dashboard_view.dart';
+import '../lead_map/lead_map_view.dart';
 import '../leads/leads_view.dart';
 import 'app_drawer.dart';
 import 'shell_controller.dart';
@@ -16,6 +17,7 @@ class ShellView extends GetView<ShellController> {
       DashboardView(),
       LeadsView(),
       ContactsView(),
+      LeadMapView(),
     ];
 
     return Obx(
@@ -23,7 +25,7 @@ class ShellView extends GetView<ShellController> {
         key: controller.scaffoldKey,
         drawer: const AppDrawer(),
         body: IndexedStack(
-          index: controller.currentIndex.value.clamp(0, 2),
+          index: controller.currentIndex.value.clamp(0, 3),
           children: pages,
         ),
         extendBody: true,
@@ -33,14 +35,14 @@ class ShellView extends GetView<ShellController> {
           onTap: controller.changeTab,
           items: const [
             BubbleNavItem(
-              icon: Icons.gps_fixed,
-              activeIcon: Icons.my_location_rounded,
-              label: 'Leads',
-            ),
-            BubbleNavItem(
               icon: Icons.people_outline_rounded,
               activeIcon: Icons.people_rounded,
               label: 'Contacts',
+            ),
+            BubbleNavItem(
+              icon: Icons.gps_fixed,
+              activeIcon: Icons.my_location_rounded,
+              label: 'Leads',
             ),
             BubbleNavItem(
               icon: Icons.home_outlined,
