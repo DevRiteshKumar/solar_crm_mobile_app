@@ -52,7 +52,7 @@ class DashboardView extends GetView<DashboardController> {
                 onRefresh: controller.load,
                 color: AppColors.primary,
                 child: ListView(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 96),
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 108),
                   children: [
                     _WelcomeBanner(
                       greeting: controller.greeting(),

@@ -81,7 +81,7 @@ class ContactsView extends GetView<ContactsController> {
                 onRefresh: () => controller.load(),
                 color: AppColors.primary,
                 child: ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(12, 4, 12, 96),
+                  padding: const EdgeInsets.fromLTRB(12, 4, 12, 108),
                   itemCount: controller.contacts.length,
                   itemBuilder: (context, index) {
                     final c = controller.contacts[index];

@@ -61,7 +61,7 @@ class LeadsView extends GetView<LeadsController> {
                 onRefresh: controller.load,
                 color: AppColors.primary,
                 child: ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(12, 4, 12, 96),
+                  padding: const EdgeInsets.fromLTRB(12, 4, 12, 108),
                   itemCount: controller.leads.length,
                   itemBuilder: (context, index) {
                     final lead = controller.leads[index];

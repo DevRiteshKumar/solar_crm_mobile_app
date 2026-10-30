@@ -24,9 +24,9 @@ class BubbleBottomNav extends StatelessWidget {
     required this.items,
   });
 
-  static const bubbleSize = 52.0;
-  static const barHeight = 58.0;
-  static const notchLift = 20.0;
+  static const bubbleSize = 50.0;
+  static const barHeight = 56.0;
+  static const notchLift = 40.0;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class BubbleBottomNav extends StatelessWidget {
                   ),
                   Positioned(
                     left: cx - bubbleSize / 2,
-                    top: 4,
+                    top: 2,
                     child: IgnorePointer(
                       child: Container(
                         width: bubbleSize,
@@ -169,19 +169,19 @@ class _BarPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final itemWidth = size.width / itemCount;
     final cx = itemWidth * (progress + 0.5);
-    const r = 28.0;
+    const r = 22.0;
     const top = BubbleBottomNav.notchLift;
     final path = Path();
 
     path.moveTo(0, top + 18);
     path.quadraticBezierTo(0, top, 18, top);
 
-    final left = (cx - r - 16).clamp(18.0, size.width - 18);
-    final right = (cx + r + 16).clamp(18.0, size.width - 18);
+    final left = (cx - r - 18).clamp(18.0, size.width - 18);
+    final right = (cx + r + 18).clamp(18.0, size.width - 18);
 
     path.lineTo(left, top);
-    path.cubicTo(cx - r - 4, top, cx - r + 4, top + r + 2, cx, top + r + 2);
-    path.cubicTo(cx + r - 4, top + r + 2, cx + r + 4, top, right, top);
+    path.cubicTo(cx - r - 2, top, cx - r + 6, top + r, cx, top + r);
+    path.cubicTo(cx + r - 6, top + r, cx + r + 2, top, right, top);
 
     path.lineTo(size.width - 18, top);
     path.quadraticBezierTo(size.width, top, size.width, top + 18);
