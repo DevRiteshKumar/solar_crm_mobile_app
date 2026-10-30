@@ -6,20 +6,25 @@ class AppTextStyles {
 
   static const TextStyle heading1 = TextStyle(
     fontSize: 28,
-    fontWeight: FontWeight.w700,
-    color: AppColors.textPrimary,
+    fontWeight: FontWeight.w800,
+    color: AppColors.ink,
+    letterSpacing: -0.4,
+    height: 1.15,
   );
 
   static const TextStyle heading2 = TextStyle(
     fontSize: 22,
-    fontWeight: FontWeight.w700,
-    color: AppColors.textPrimary,
+    fontWeight: FontWeight.w800,
+    color: AppColors.ink,
+    letterSpacing: -0.3,
+    height: 1.15,
   );
 
   static const TextStyle heading3 = TextStyle(
     fontSize: 18,
-    fontWeight: FontWeight.w600,
-    color: AppColors.textPrimary,
+    fontWeight: FontWeight.w700,
+    color: AppColors.ink,
+    height: 1.2,
   );
 
   static const TextStyle body = TextStyle(

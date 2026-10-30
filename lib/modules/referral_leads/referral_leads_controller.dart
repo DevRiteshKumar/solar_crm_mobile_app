@@ -10,9 +10,20 @@ class ReferralLeadsController extends GetxController {
 
   final isLoading = false.obs;
   final leads = <Lead>[].obs;
+  final allLeads = <Lead>[].obs;
   final searchQuery = ''.obs;
   final showSearch = false.obs;
   final sortLabel = 'Last Contact'.obs;
+  final selectedFilter = 'All'.obs;
+
+  int get totalLeads => allLeads.length;
+  int get dueToday => allLeads.where((l) => l.todayVisit).length;
+  int get needsAttention => allLeads
+      .where((l) => l.priority.toLowerCase().contains('high') || l.status == 'Interested')
+      .length;
+  int get thisWeek => allLeads.where((l) => l.todayVisit || l.nextStep == 'Follow up Call').length;
+
+  List<String> get customFilters => _leads?.customFilters.toList() ?? const [];
 
   LeadsController? get _leads =>
       Get.isRegistered<LeadsController>() ? Get.find<LeadsController>() : null;
@@ -26,15 +37,86 @@ class ReferralLeadsController extends GetxController {
   Future<void> load() async {
     try {
       isLoading.value = true;
-      leads.assignAll(
-        await _repository.getLeads(
-          query: searchQuery.value,
-          filter: 'Referral Leads',
-        ),
+      final all = await _repository.getLeads(
+        query: searchQuery.value,
+        filter: 'Referral Leads',
       );
+      allLeads.assignAll(all);
+      leads.assignAll(_applyFilter(all, selectedFilter.value));
     } finally {
       isLoading.value = false;
     }
+  }
+
+  List<Lead> _applyFilter(List<Lead> source, String filter) {
+    if (_leads != null) return _leads!.applyFilter(source, filter);
+    if (filter.isEmpty || filter == 'All' || filter == 'All Leads') return source;
+    final f = filter.toLowerCase();
+    return source.where((l) {
+      if (l.tags.any((t) => t.toLowerCase() == f)) return true;
+      if (f == 'today') return l.todayVisit;
+      if (f == 'high priority' || f == 'very high priority') {
+        return l.priority.toLowerCase().contains('high');
+      }
+      if (f == 'interested' || f == 'intrested') {
+        return l.status.toLowerCase() == 'interested';
+      }
+      return false;
+    }).toList();
+  }
+
+  void selectFilter(String filter) {
+    selectedFilter.value = filter;
+    leads.assignAll(_applyFilter(allLeads, filter));
+  }
+
+  void showFiltersSheet() {
+    final basics = ['All', 'Today', 'High Priority', 'Interested'];
+    Get.bottomSheet(
+      Container(
+        color: Colors.white,
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(8, 16, 8, 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text('Filters', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                ),
+                const SizedBox(height: 8),
+                ...basics.map(_filterTile),
+                if (customFilters.isNotEmpty) ...[
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
+                    child: Text(
+                      'Custom Filters',
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Color(0xFFC62828)),
+                    ),
+                  ),
+                  ...customFilters.map(_filterTile),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _filterTile(String f) {
+    return ListTile(
+      dense: true,
+      title: Text(f),
+      trailing: selectedFilter.value == f
+          ? const Icon(Icons.check, color: Color(0xFFC62828))
+          : null,
+      onTap: () {
+        selectFilter(f);
+        Get.back();
+      },
+    );
   }
 
   void toggleSearch() => showSearch.toggle();

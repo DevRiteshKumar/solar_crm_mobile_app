@@ -37,16 +37,17 @@ class LoginView extends GetView<LoginController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Welcome back',
+                    'Welcome to Solar CRM',
                     style: AppTextStyles.heading1.copyWith(
-                      fontSize: 26,
+                      fontSize: 24,
                       fontWeight: FontWeight.w800,
                       height: 1.2,
+                      color: AppColors.ink,
                     ),
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'Sign in to continue to your CRM dashboard',
+                    'Sign in to continue to your dashboard.',
                     style: AppTextStyles.body.copyWith(
                       color: AppColors.textSecondary,
                       height: 1.4,
@@ -138,7 +139,7 @@ class LoginView extends GetView<LoginController> {
                           elevation: 0,
                           shadowColor: AppColors.primary.withValues(alpha: 0.35),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(28),
                           ),
                         ),
                         child: controller.isLoading.value

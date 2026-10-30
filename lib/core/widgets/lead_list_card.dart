@@ -52,7 +52,7 @@ class LeadListCard extends StatelessWidget {
     final name = lead.customerName.trim().isNotEmpty ? lead.customerName : lead.businessName;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -65,89 +65,81 @@ class LeadListCard extends StatelessWidget {
               border: Border.all(
                 color: selected ? pinColor.withValues(alpha: 0.45) : AppColors.border,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
-                ),
-              ],
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border(left: BorderSide(color: pinColor, width: 4)),
-                ),
-                padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _LeadAvatar(
-                          label: showIndex ? '$index' : _initials(name),
-                          color: pinColor,
-                          checkedIn: checkedIn,
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      name,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: AppTextStyles.bodyMedium.copyWith(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w800,
-                                        height: 1.2,
-                                      ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 10, 8, 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _LeadAvatar(
+                        label: showIndex ? '$index' : _initials(name),
+                        color: pinColor,
+                        checkedIn: checkedIn,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppTextStyles.bodyMedium.copyWith(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w800,
+                                      height: 1.2,
+                                      color: AppColors.ink,
                                     ),
                                   ),
-                                  if (lead.leadType.trim().isNotEmpty) ...[
-                                    const SizedBox(width: 6),
-                                    _LeadTypeChip(type: lead.leadType),
-                                  ],
+                                ),
+                                if (lead.leadType.trim().isNotEmpty) ...[
+                                  const SizedBox(width: 6),
+                                  _LeadTypeChip(type: lead.leadType),
                                 ],
-                              ),
-                            ],
-                          ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            _ContactGrid(
+                              phone: lead.displayPhone,
+                              email: lead.displayEmail,
+                              address: lead.displayAddress,
+                              lastContact: lead.lastContact,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    _ContactGrid(
-                      phone: lead.displayPhone,
-                      email: lead.displayEmail,
-                      address: lead.displayAddress,
-                      lastContact: lead.lastContact,
-                    ),
-                    if (onUpdate != null) ...[
-                      const SizedBox(height: 8),
-                      GestureDetector(
-                        onTap: () {},
-                        child: LeadFieldDropdowns(lead: lead, onChanged: onUpdate!),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 8),
+                        child: Icon(Icons.chevron_right_rounded, size: 20, color: AppColors.textHint),
                       ),
                     ],
+                  ),
+                  if (onUpdate != null) ...[
                     const SizedBox(height: 8),
-                    LeadQuickActions(
-                      onCall: onCall,
-                      onNavigate: onNavigate,
-                      onEdit: onEdit,
-                      onClone: onClone,
-                      onTasks: onTasks,
-                      onNotes: onNotes,
-                      onFiles: onFiles,
-                      onDelete: onDelete,
+                    GestureDetector(
+                      onTap: () {},
+                      child: LeadFieldDropdowns(lead: lead, onChanged: onUpdate!),
                     ),
                   ],
-                ),
+                  const SizedBox(height: 8),
+                  LeadQuickActions(
+                    onCall: onCall,
+                    onNavigate: onNavigate,
+                    onEdit: onEdit,
+                    onClone: onClone,
+                    onTasks: onTasks,
+                    onNotes: onNotes,
+                    onFiles: onFiles,
+                    onDelete: onDelete,
+                  ),
+                ],
               ),
             ),
           ),
@@ -184,38 +176,25 @@ class _ContactGrid extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: _InfoLine(
-                icon: Icons.call_outlined,
-                text: phone,
-                iconColor: AppColors.primary,
-              ),
+              child: _InfoLine(icon: Icons.call_outlined, text: phone),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Expanded(
-              child: _InfoLine(
-                icon: Icons.mail_outline_rounded,
-                text: email,
-                iconColor: const Color(0xFF1565C0),
-              ),
+              child: _InfoLine(icon: Icons.mail_outline_rounded, text: email),
             ),
           ],
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 4),
         Row(
           children: [
             Expanded(
-              child: _InfoLine(
-                icon: Icons.location_on_outlined,
-                text: address,
-                iconColor: AppColors.accentOrange,
-              ),
+              child: _InfoLine(icon: Icons.location_on_outlined, text: address),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Expanded(
               child: _InfoLine(
                 icon: Icons.access_time,
                 text: lastContact?.trim().isNotEmpty == true ? lastContact! : '-',
-                iconColor: const Color(0xFF00897B),
               ),
             ),
           ],
@@ -228,29 +207,25 @@ class _ContactGrid extends StatelessWidget {
 class _InfoLine extends StatelessWidget {
   final IconData icon;
   final String text;
-  final Color iconColor;
 
-  const _InfoLine({
-    required this.icon,
-    required this.text,
-    required this.iconColor,
-  });
+  const _InfoLine({required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 14, color: iconColor),
-        const SizedBox(width: 5),
+        Icon(icon, size: 13, color: AppColors.textSecondary),
+        const SizedBox(width: 4),
         Expanded(
           child: Text(
             text,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              height: 1.25,
+              color: AppColors.textSecondary,
             ),
           ),
         ),
@@ -264,30 +239,22 @@ class _LeadTypeChip extends StatelessWidget {
 
   const _LeadTypeChip({required this.type});
 
-  Color get _color {
-    final value = type.toLowerCase();
-    if (value.contains('commercial')) return const Color(0xFF1565C0);
-    if (value.contains('industrial')) return const Color(0xFF6A1B9A);
-    return const Color(0xFF2E7D32);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final color = _color;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: AppColors.tile,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         type,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 10,
-          fontWeight: FontWeight.w800,
-          color: color,
+          fontWeight: FontWeight.w700,
+          color: AppColors.ink,
         ),
       ),
     );
@@ -311,17 +278,18 @@ class _LeadAvatar extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         Container(
-          width: 36,
-          height: 36,
+          width: 40,
+          height: 40,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: color,
+            color: color.withValues(alpha: 0.12),
             shape: BoxShape.circle,
+            border: Border.all(color: color.withValues(alpha: 0.35)),
           ),
           child: Text(
             label,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: color,
               fontSize: 13,
               fontWeight: FontWeight.w800,
             ),
@@ -333,10 +301,7 @@ class _LeadAvatar extends StatelessWidget {
             bottom: -2,
             child: Container(
               padding: const EdgeInsets.all(1),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-              ),
+              decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
               child: const Icon(Icons.check_circle, size: 12, color: AppColors.success),
             ),
           ),

@@ -11,6 +11,7 @@ class LeadSummaryBar extends StatelessWidget {
   final ValueChanged<String> onFilterSelected;
   final VoidCallback onMore;
   final EdgeInsetsGeometry padding;
+  final bool showStats;
 
   const LeadSummaryBar({
     super.key,
@@ -23,6 +24,7 @@ class LeadSummaryBar extends StatelessWidget {
     required this.onMore,
     this.customFilters = const [],
     this.padding = const EdgeInsets.fromLTRB(12, 8, 12, 4),
+    this.showStats = true,
   });
 
   @override
@@ -31,46 +33,48 @@ class LeadSummaryBar extends StatelessWidget {
       padding: padding,
       child: Column(
         children: [
-          Row(
-            children: [
-              _StatTile(
-                icon: Icons.calendar_today_rounded,
-                label: 'Due Today',
-                value: dueToday,
-                background: const Color(0xFFFFEBEE),
-                foreground: const Color(0xFFC62828),
-                onTap: () => onFilterSelected('Today'),
-              ),
-              const SizedBox(width: 6),
-              _StatTile(
-                icon: Icons.warning_amber_rounded,
-                label: 'Needs Attention',
-                value: needsAttention,
-                background: const Color(0xFFFFF8E1),
-                foreground: const Color(0xFFF9A825),
-                onTap: () => onFilterSelected('High Priority'),
-              ),
-              const SizedBox(width: 6),
-              _StatTile(
-                icon: Icons.people_alt_rounded,
-                label: 'This Week',
-                value: thisWeek,
-                background: const Color(0xFFE3F2FD),
-                foreground: const Color(0xFF1976D2),
-                onTap: () => onFilterSelected('All'),
-              ),
-              const SizedBox(width: 6),
-              _StatTile(
-                icon: Icons.bar_chart_rounded,
-                label: 'Total Leads',
-                value: totalLeads,
-                background: const Color(0xFFE8F5E9),
-                foreground: const Color(0xFF2E7D32),
-                onTap: () => onFilterSelected('All'),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
+          if (showStats) ...[
+            Row(
+              children: [
+                _StatTile(
+                  icon: Icons.calendar_today_rounded,
+                  label: 'Due Today',
+                  value: dueToday,
+                  background: const Color(0xFFFFEBEE),
+                  foreground: const Color(0xFFC62828),
+                  onTap: () => onFilterSelected('Today'),
+                ),
+                const SizedBox(width: 6),
+                _StatTile(
+                  icon: Icons.warning_amber_rounded,
+                  label: 'Needs Attention',
+                  value: needsAttention,
+                  background: const Color(0xFFFFF8E1),
+                  foreground: const Color(0xFFF9A825),
+                  onTap: () => onFilterSelected('High Priority'),
+                ),
+                const SizedBox(width: 6),
+                _StatTile(
+                  icon: Icons.people_alt_rounded,
+                  label: 'This Week',
+                  value: thisWeek,
+                  background: const Color(0xFFE3F2FD),
+                  foreground: const Color(0xFF1976D2),
+                  onTap: () => onFilterSelected('All'),
+                ),
+                const SizedBox(width: 6),
+                _StatTile(
+                  icon: Icons.bar_chart_rounded,
+                  label: 'Total Leads',
+                  value: totalLeads,
+                  background: const Color(0xFFE8F5E9),
+                  foreground: const Color(0xFF2E7D32),
+                  onTap: () => onFilterSelected('All'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+          ],
           SizedBox(
             height: 34,
             child: ListView(

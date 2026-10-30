@@ -155,19 +155,19 @@ class _Pill extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(20),
           child: Container(
-            height: 28,
+            height: 26,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               border: outlined ? Border.all(color: const Color(0xFFE5E7EB)) : null,
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 6),
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: 14, color: foreground),
+                  Icon(icon, size: 13, color: foreground),
                   const SizedBox(width: 4),
                   Text(
                     label,
@@ -175,7 +175,7 @@ class _Pill extends StatelessWidget {
                     softWrap: false,
                     style: TextStyle(
                       fontSize: 11,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                       color: foreground,
                     ),
                   ),

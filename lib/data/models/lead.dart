@@ -39,6 +39,16 @@ class Lead {
 
   bool get hasLocation => latitude != null && longitude != null;
 
+  bool get isActive {
+    final step = (nextStep ?? '').trim().toLowerCase();
+    final st = status.trim().toLowerCase();
+    if (step == 'completed') return false;
+    if (st == 'lost to competitor' || st == 'not eligible' || st == 'for future') {
+      return false;
+    }
+    return true;
+  }
+
   String get displayPhone {
     if (phone.trim().isNotEmpty) return phone.trim();
     final seed = (id.hashCode.abs() % 90000000) + 10000000;

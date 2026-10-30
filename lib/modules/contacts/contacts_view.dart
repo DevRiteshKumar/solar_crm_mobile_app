@@ -37,7 +37,7 @@ class ContactsView extends GetView<ContactsController> {
               },
             );
           }),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Obx(
             () => ProStatsRow(
               stats: [
@@ -59,7 +59,7 @@ class ContactsView extends GetView<ContactsController> {
               ],
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10),
           Obx(
             () => ProFilterChips(
               filters: const ['All', 'Recent', 'With Email'],
@@ -81,7 +81,7 @@ class ContactsView extends GetView<ContactsController> {
                 onRefresh: () => controller.load(),
                 color: AppColors.primary,
                 child: ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 96),
+                  padding: const EdgeInsets.fromLTRB(12, 4, 12, 96),
                   itemCount: controller.contacts.length,
                   itemBuilder: (context, index) {
                     final c = controller.contacts[index];

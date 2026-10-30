@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import '../../app/routes/app_routes.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_text_styles.dart';
-import '../../core/constants/app_constants.dart';
 import '../../data/mock/mock_data.dart';
 import '../leads/leads_controller.dart';
 import 'shell_controller.dart';
@@ -17,56 +16,53 @@ class AppDrawer extends StatelessWidget {
 
     return Drawer(
       backgroundColor: AppColors.surface,
-      child: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 12, 4, 8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Image.asset(
-                      AppConstants.logoPath,
-                      height: 52,
-                      fit: BoxFit.contain,
-                      alignment: Alignment.centerLeft,
-                      errorBuilder: (_, __, ___) =>
-                          const Icon(Icons.wb_sunny, color: AppColors.primary, size: 52),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.chevron_left),
-                    onPressed: () => Get.back(),
-                  ),
-                ],
-              ),
-            ),
+      child: Column(
+        children: [
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.background,
-                borderRadius: BorderRadius.circular(12),
+              width: double.infinity,
+              color: AppColors.ink,
+              padding: EdgeInsets.fromLTRB(
+                20,
+                MediaQuery.of(context).padding.top + 12,
+                8,
+                24,
               ),
-              child: Row(
+              child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: 22,
-                    backgroundColor: AppColors.primary.withValues(alpha: 0.15),
-                    child: Text(
-                      controller.user.name.isNotEmpty ? controller.user.name[0] : 'U',
-                      style: AppTextStyles.heading3.copyWith(color: AppColors.primary),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white70),
+                      onPressed: () => Get.back(),
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(controller.user.name, style: AppTextStyles.bodyMedium),
-                        Text(controller.user.role, style: AppTextStyles.caption),
-                      ],
+                  CircleAvatar(
+                    radius: 36,
+                    backgroundColor: Colors.white24,
+                    child: Text(
+                      controller.user.name.isNotEmpty ? controller.user.name[0].toUpperCase() : 'U',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 26,
+                      ),
                     ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    controller.user.name,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    controller.user.role,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.caption.copyWith(color: Colors.white70),
                   ),
                 ],
               ),
@@ -282,17 +278,35 @@ class AppDrawer extends StatelessWidget {
               ),
             ),
             const Divider(height: 1),
-            ListTile(
-              leading: const Icon(Icons.logout, color: AppColors.primary),
-              title: Text(
-                'Logout',
-                style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary),
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                16,
+                10,
+                16,
+                12 + MediaQuery.of(context).padding.bottom,
               ),
-              onTap: controller.logout,
+              child: SizedBox(
+                width: double.infinity,
+                height: 46,
+                child: ElevatedButton(
+                  onPressed: controller.logout,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.ink,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                  ),
+                  child: const Text(
+                    'Logout',
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
-      ),
     );
   }
 
@@ -312,7 +326,7 @@ class AppDrawer extends StatelessWidget {
     bool highlight = false,
     Widget? trailing,
   }) {
-    final color = selected || highlight ? AppColors.primary : AppColors.textPrimary;
+    final color = selected || highlight ? AppColors.primary : AppColors.textSecondary;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
       decoration: BoxDecoration(
@@ -328,8 +342,8 @@ class AppDrawer extends StatelessWidget {
         title: Text(
           label,
           style: AppTextStyles.body.copyWith(
-            color: color,
-            fontWeight: selected || highlight ? FontWeight.w600 : FontWeight.w400,
+            color: selected || highlight ? AppColors.primary : AppColors.ink,
+            fontWeight: selected || highlight ? FontWeight.w600 : FontWeight.w500,
           ),
         ),
         trailing: trailing,

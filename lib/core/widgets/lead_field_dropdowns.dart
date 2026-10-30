@@ -79,15 +79,15 @@ class LeadFieldDropdowns extends StatelessWidget {
           Row(
             children: [
               Expanded(child: _MiniSelect(spec: fields[0])),
-              const SizedBox(width: 6),
+              const SizedBox(width: 5),
               Expanded(child: _MiniSelect(spec: fields[1])),
             ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 5),
           Row(
             children: [
               Expanded(child: _MiniSelect(spec: fields[2])),
-              const SizedBox(width: 6),
+              const SizedBox(width: 5),
               Expanded(child: _MiniSelect(spec: fields[3])),
             ],
           ),
@@ -127,44 +127,48 @@ class _MiniSelect extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: () => _showLeadOptionSheet(spec),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         child: Ink(
-          padding: const EdgeInsets.fromLTRB(8, 5, 4, 5),
+          padding: const EdgeInsets.fromLTRB(8, 6, 4, 6),
           decoration: BoxDecoration(
-            color: spec.color.withValues(alpha: 0.11),
-            borderRadius: BorderRadius.circular(12),
+            color: AppColors.tile,
+            borderRadius: BorderRadius.circular(10),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Text(
-                spec.label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  color: spec.color,
+              Container(
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(color: spec.color, shape: BoxShape.circle),
+              ),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '${spec.label}  ',
+                        style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                          color: spec.color,
+                        ),
+                      ),
+                      TextSpan(
+                        text: selected,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          color: spec.value.trim().isEmpty ? AppColors.textHint : AppColors.ink,
+                        ),
+                      ),
+                    ],
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const SizedBox(height: 2),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      selected,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800,
-                        color: spec.value.trim().isEmpty ? AppColors.textHint : AppColors.textPrimary,
-                      ),
-                    ),
-                  ),
-                  Icon(Icons.keyboard_arrow_down_rounded, size: 15, color: spec.color),
-                ],
-              ),
+              Icon(Icons.keyboard_arrow_down_rounded, size: 14, color: spec.color),
             ],
           ),
         ),

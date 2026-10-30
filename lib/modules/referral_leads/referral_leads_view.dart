@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../app/theme/app_colors.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/lead_list_card.dart';
+import '../../core/widgets/lead_summary_bar.dart';
 import '../../core/widgets/loading_view.dart';
 import '../../core/widgets/pro_ui.dart';
 import 'referral_leads_controller.dart';
@@ -36,34 +37,16 @@ class ReferralLeadsView extends GetView<ReferralLeadsController> {
               },
             );
           }),
-          const SizedBox(height: 12),
           Obx(
-            () => ProStatsRow(
-              stats: [
-                ProStatCard(
-                  icon: Icons.share_outlined,
-                  value: '${controller.leads.length}',
-                  label: 'Referral leads',
-                ),
-                ProStatCard(
-                  icon: Icons.verified_outlined,
-                  value: '${controller.leads.where((l) => l.status == 'Deal Confirmed').length}',
-                  label: 'Confirmed',
-                ),
-                ProStatCard(
-                  icon: Icons.flag_outlined,
-                  value: '${controller.leads.where((l) => l.status == 'New').length}',
-                  label: 'New',
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Obx(
-            () => ProSortFilterBar(
-              sortLabel: controller.sortLabel.value,
-              onSort: () {},
-              onFilters: () {},
+            () => LeadSummaryBar(
+              dueToday: controller.dueToday,
+              needsAttention: controller.needsAttention,
+              thisWeek: controller.thisWeek,
+              totalLeads: controller.totalLeads,
+              selectedFilter: controller.selectedFilter.value,
+              customFilters: controller.customFilters,
+              onFilterSelected: controller.selectFilter,
+              onMore: controller.showFiltersSheet,
             ),
           ),
           Expanded(
@@ -76,7 +59,7 @@ class ReferralLeadsView extends GetView<ReferralLeadsController> {
                 onRefresh: controller.load,
                 color: AppColors.primary,
                 child: ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                  padding: const EdgeInsets.fromLTRB(12, 4, 12, 24),
                   itemCount: controller.leads.length,
                   itemBuilder: (context, index) {
                     final lead = controller.leads[index];

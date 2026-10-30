@@ -18,7 +18,7 @@ class ShellController extends GetxController {
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final leadsExpanded = true.obs;
-  final customFiltersExpanded = true.obs;
+  final customFiltersExpanded = false.obs;
   final referralLeadsExpanded = false.obs;
   final openedRoute = ''.obs;
 

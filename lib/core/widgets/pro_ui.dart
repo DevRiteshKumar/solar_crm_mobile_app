@@ -51,7 +51,12 @@ class ProPageHeader extends StatelessWidget {
               children: [
                 OneLineTitle(
                   text: title,
-                  style: AppTextStyles.heading2.copyWith(fontSize: 24, fontWeight: FontWeight.w800, height: 1.15),
+                  style: AppTextStyles.heading2.copyWith(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    height: 1.15,
+                    color: AppColors.ink,
+                  ),
                   minFontSize: 15,
                 ),
                 if (subtitle != null)
@@ -338,19 +343,12 @@ class ProListCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final card = Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: padding ?? const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: padding ?? const EdgeInsets.fromLTRB(14, 12, 12, 12),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border.withValues(alpha: 0.9)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border),
       ),
       child: child,
     );

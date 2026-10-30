@@ -389,7 +389,7 @@ class MockData {
       totalReferrers: referrals.length,
       totalTasks: 8,
       userName: currentUser.name,
-      planExpiryMessage: 'Your plan expires today.',
+      planExpiryMessage: 'Expires today',
       leadsByStatus: List.from(leads),
       leadsByPriority: List.from(leads),
       leadOverview: List.from(leads),

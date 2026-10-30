@@ -13,6 +13,8 @@ class AppColors {
 
   static const Color background = Color(0xFFF7F8FA);
   static const Color surface = Colors.white;
+  static const Color tile = Color(0xFFF4F3F8);
+  static const Color ink = Color(0xFF111111);
   static const Color inputFill = Color(0xFFF0F2F5);
   static const Color border = Color(0xFFE5E7EB);
   static const Color divider = Color(0xFFEEEEEE);

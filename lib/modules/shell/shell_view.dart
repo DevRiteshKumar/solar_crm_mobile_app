@@ -32,11 +32,31 @@ class ShellView extends GetView<ShellController> {
           currentIndex: controller.navIndex,
           onTap: controller.changeTab,
           items: const [
-            BubbleNavItem(icon: Icons.gps_fixed, label: 'Leads'),
-            BubbleNavItem(icon: Icons.people_rounded, label: 'Contacts'),
-            BubbleNavItem(icon: Icons.dashboard_rounded, label: 'Home'),
-            BubbleNavItem(icon: Icons.map_outlined, label: 'Map'),
-            BubbleNavItem(icon: Icons.menu, label: 'More'),
+            BubbleNavItem(
+              icon: Icons.gps_fixed,
+              activeIcon: Icons.my_location_rounded,
+              label: 'Leads',
+            ),
+            BubbleNavItem(
+              icon: Icons.people_outline_rounded,
+              activeIcon: Icons.people_rounded,
+              label: 'Contacts',
+            ),
+            BubbleNavItem(
+              icon: Icons.home_outlined,
+              activeIcon: Icons.home_rounded,
+              label: 'Home',
+            ),
+            BubbleNavItem(
+              icon: Icons.map_outlined,
+              activeIcon: Icons.map_rounded,
+              label: 'Map',
+            ),
+            BubbleNavItem(
+              icon: Icons.menu_rounded,
+              activeIcon: Icons.menu_open_rounded,
+              label: 'More',
+            ),
           ],
         ),
       ),

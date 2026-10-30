@@ -61,7 +61,7 @@ class DashboardController extends GetxController {
 
   void extendTrial() {
     Get.snackbar(
-      'Extend Free Trial',
+      'Extend Plan',
       'Request submitted (mock).',
       snackPosition: SnackPosition.BOTTOM,
     );
