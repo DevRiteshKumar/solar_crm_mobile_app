@@ -79,15 +79,15 @@ class LeadFieldDropdowns extends StatelessWidget {
           Row(
             children: [
               Expanded(child: _MiniSelect(spec: fields[0])),
-              const SizedBox(width: 8),
+              const SizedBox(width: 7),
               Expanded(child: _MiniSelect(spec: fields[1])),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 7),
           Row(
             children: [
               Expanded(child: _MiniSelect(spec: fields[2])),
-              const SizedBox(width: 8),
+              const SizedBox(width: 7),
               Expanded(child: _MiniSelect(spec: fields[3])),
             ],
           ),
@@ -127,13 +127,12 @@ class _MiniSelect extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: () => _showLeadOptionSheet(spec),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(11),
         child: Ink(
-          padding: const EdgeInsets.fromLTRB(10, 7, 6, 7),
+          padding: const EdgeInsets.fromLTRB(9, 6, 5, 6),
           decoration: BoxDecoration(
-            color: spec.color.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: spec.color.withValues(alpha: 0.16)),
+            color: spec.color.withValues(alpha: 0.11),
+            borderRadius: BorderRadius.circular(11),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,7 +162,7 @@ class _MiniSelect extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Icon(Icons.expand_more, size: 16, color: spec.color),
+                  Icon(Icons.keyboard_arrow_down_rounded, size: 15, color: spec.color),
                 ],
               ),
             ],

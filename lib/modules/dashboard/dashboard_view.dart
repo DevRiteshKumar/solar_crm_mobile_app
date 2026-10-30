@@ -108,24 +108,18 @@ class DashboardView extends GetView<DashboardController> {
                     const SizedBox(height: 22),
                     Obx(() {
                       final leadsCtrl = Get.find<LeadsController>();
+                      leadsCtrl.allLeads.length;
                       final selectedFilter = leadsCtrl.selectedFilter.value;
-                      final customFilters = leadsCtrl.customFilters.toList();
-                      final sectionLeads = leadsCtrl.applyFilter(
-                        controller.leadsForSection(s),
-                        selectedFilter,
-                      );
+                      final source = leadsCtrl.allLeads.isNotEmpty
+                          ? leadsCtrl.allLeads.toList()
+                          : s.leadsByStatus;
+                      final sectionLeads = leadsCtrl.applyFilter(source, selectedFilter);
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
                               const Expanded(child: _SectionTitle(title: 'Lead Insights')),
-                              CustomFilterDropdown(
-                                filters: customFilters,
-                                selectedFilter: selectedFilter,
-                                onSelected: leadsCtrl.selectFilter,
-                              ),
-                              const SizedBox(width: 6),
                               TextButton(
                                 onPressed: () => Get.find<ShellController>().changeTab(1),
                                 style: TextButton.styleFrom(
@@ -148,15 +142,21 @@ class DashboardView extends GetView<DashboardController> {
                             ],
                           ),
                           const SizedBox(height: 10),
-                          _InsightTabs(
-                            tabs: DashboardController.sectionTabs,
-                            selected: controller.selectedSection.value,
-                            onSelected: controller.selectSection,
+                          LeadSummaryBar(
+                            dueToday: leadsCtrl.dueToday,
+                            needsAttention: leadsCtrl.needsAttention,
+                            thisWeek: leadsCtrl.thisWeek,
+                            totalLeads: leadsCtrl.totalLeads,
+                            selectedFilter: selectedFilter,
+                            customFilters: leadsCtrl.customFilters.toList(),
+                            onFilterSelected: leadsCtrl.selectFilter,
+                            onMore: leadsCtrl.showFiltersSheet,
+                            padding: EdgeInsets.zero,
                           ),
                           const SizedBox(height: 12),
                           _InsightCard(
                             title: selectedFilter == 'All' || selectedFilter == 'All Leads'
-                                ? controller.sectionTitle()
+                                ? 'Leads'
                                 : selectedFilter,
                             count: sectionLeads.length,
                             leads: sectionLeads,
@@ -652,54 +652,6 @@ class _KpiGrid extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _InsightTabs extends StatelessWidget {
-  final List<String> tabs;
-  final String selected;
-  final ValueChanged<String> onSelected;
-
-  const _InsightTabs({
-    required this.tabs,
-    required this.selected,
-    required this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 38,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: tabs.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
-        itemBuilder: (context, index) {
-          final tab = tabs[index];
-          final isSelected = selected == tab;
-          return GestureDetector(
-            onTap: () => onSelected(tab),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              decoration: BoxDecoration(
-                color: isSelected ? AppColors.primary : AppColors.surface,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: isSelected ? AppColors.primary : AppColors.border),
-              ),
-              child: Text(
-                tab,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: isSelected ? Colors.white : AppColors.textSecondary,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
     );
   }
 }

@@ -10,16 +10,6 @@ class DashboardController extends GetxController {
   final isLoading = true.obs;
   final stats = Rxn<DashboardStats>();
   final dateRangeLabel = '11 Sep – 17 Sep 2026'.obs;
-  final selectedSection = 'Status'.obs;
-
-  static const sectionTabs = [
-    'Status',
-    'Priority',
-    'Overview',
-    'Financials',
-    'Next Step',
-    'Completed',
-  ];
 
   @override
   void onInit() {
@@ -35,44 +25,6 @@ class DashboardController extends GetxController {
       Get.snackbar('Error', 'Failed to load dashboard');
     } finally {
       isLoading.value = false;
-    }
-  }
-
-  void selectSection(String section) => selectedSection.value = section;
-
-  List<Lead> leadsForSection(DashboardStats s) {
-    switch (selectedSection.value) {
-      case 'Priority':
-        return s.leadsByPriority;
-      case 'Overview':
-        return s.leadOverview;
-      case 'Financials':
-        return s.leadFinancials;
-      case 'Next Step':
-        return s.leadsByNextStep;
-      case 'Completed':
-        return s.leadsCompleted;
-      case 'Status':
-      default:
-        return s.leadsByStatus;
-    }
-  }
-
-  String sectionTitle() {
-    switch (selectedSection.value) {
-      case 'Priority':
-        return 'Leads By Priority';
-      case 'Overview':
-        return 'Lead Overview';
-      case 'Financials':
-        return 'Lead Financials';
-      case 'Next Step':
-        return 'Leads By Next Step';
-      case 'Completed':
-        return 'Leads Completed';
-      case 'Status':
-      default:
-        return 'Leads By Status';
     }
   }
 

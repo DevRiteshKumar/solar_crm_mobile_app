@@ -38,15 +38,15 @@ class LeadQuickActions extends StatelessWidget {
             children: [
               _Action(icon: Icons.call_outlined, label: 'Call', color: AppColors.primary, onTap: onCall),
               _Action(icon: Icons.send_outlined, label: 'Navigation', color: AppColors.accentBlue, onTap: onNavigate),
-              _Action(icon: Icons.edit_outlined, label: 'Edit', color: AppColors.accentOrange, onTap: onEdit),
               _Action(icon: Icons.check_circle_outline, label: 'Tasks', color: const Color(0xFF00897B), onTap: onTasks),
+              _Action(icon: Icons.sticky_note_2_outlined, label: 'Notes', color: const Color(0xFFF57C00), onTap: onNotes),
             ],
           ),
           const SizedBox(height: 2),
           Row(
             children: [
-              _Action(icon: Icons.sticky_note_2_outlined, label: 'Notes', color: const Color(0xFFF57C00), onTap: onNotes),
               _Action(icon: Icons.folder_outlined, label: 'Files', color: const Color(0xFF3949AB), onTap: onFiles),
+              _Action(icon: Icons.edit_outlined, label: 'Edit', color: AppColors.accentOrange, onTap: onEdit),
               _Action(icon: Icons.delete_outline, label: 'Delete', color: AppColors.primary, onTap: onDelete),
               _Action(icon: Icons.filter_none_outlined, label: 'Clone', color: AppColors.accentPurple, onTap: onClone),
             ],

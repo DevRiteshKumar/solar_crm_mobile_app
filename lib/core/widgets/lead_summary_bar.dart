@@ -10,6 +10,7 @@ class LeadSummaryBar extends StatelessWidget {
   final List<String> customFilters;
   final ValueChanged<String> onFilterSelected;
   final VoidCallback onMore;
+  final EdgeInsetsGeometry padding;
 
   const LeadSummaryBar({
     super.key,
@@ -21,12 +22,13 @@ class LeadSummaryBar extends StatelessWidget {
     required this.onFilterSelected,
     required this.onMore,
     this.customFilters = const [],
+    this.padding = const EdgeInsets.fromLTRB(12, 8, 12, 4),
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+      padding: padding,
       child: Column(
         children: [
           Row(
