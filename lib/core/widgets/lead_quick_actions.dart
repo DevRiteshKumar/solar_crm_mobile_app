@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../app/theme/app_colors.dart';
-import '../../app/theme/app_text_styles.dart';
 
 class LeadQuickActions extends StatelessWidget {
   final VoidCallback onCall;
@@ -26,44 +25,177 @@ class LeadQuickActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(4, 8, 4, 6),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF4F5F7),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
+    return GestureDetector(
+      onTap: () {},
+      child: Row(
         children: [
-          Row(
-            children: [
-              _Action(icon: Icons.call_outlined, label: 'Call', color: AppColors.primary, onTap: onCall),
-              _Action(icon: Icons.send_outlined, label: 'Navigation', color: AppColors.accentBlue, onTap: onNavigate),
-              _Action(icon: Icons.check_circle_outline, label: 'Tasks', color: const Color(0xFF00897B), onTap: onTasks),
-              _Action(icon: Icons.sticky_note_2_outlined, label: 'Notes', color: const Color(0xFFF57C00), onTap: onNotes),
-            ],
+          _Pill(
+            icon: Icons.call_outlined,
+            label: 'Call',
+            background: const Color(0xFFFFE4EC),
+            foreground: AppColors.primary,
+            flex: 3,
+            onTap: onCall,
           ),
-          const SizedBox(height: 2),
-          Row(
-            children: [
-              _Action(icon: Icons.folder_outlined, label: 'Files', color: const Color(0xFF3949AB), onTap: onFiles),
-              _Action(icon: Icons.edit_outlined, label: 'Edit', color: AppColors.accentOrange, onTap: onEdit),
-              _Action(icon: Icons.delete_outline, label: 'Delete', color: AppColors.primary, onTap: onDelete),
-              _Action(icon: Icons.filter_none_outlined, label: 'Clone', color: AppColors.accentPurple, onTap: onClone),
-            ],
+          const SizedBox(width: 6),
+          _Pill(
+            icon: Icons.send_outlined,
+            label: 'Navigation',
+            background: const Color(0xFFE8F5E9),
+            foreground: const Color(0xFF2E7D32),
+            flex: 5,
+            onTap: onNavigate,
+          ),
+          const SizedBox(width: 6),
+          _Pill(
+            icon: Icons.sticky_note_2_outlined,
+            label: 'Notes',
+            background: const Color(0xFFE3F2FD),
+            foreground: const Color(0xFF1565C0),
+            flex: 3,
+            onTap: onNotes,
+          ),
+          const SizedBox(width: 6),
+          _Pill(
+            icon: Icons.check_circle_outline,
+            label: 'Tasks',
+            background: const Color(0xFFFFF3E0),
+            foreground: const Color(0xFFEF6C00),
+            flex: 3,
+            onTap: onTasks,
+          ),
+          const SizedBox(width: 6),
+          _Pill(
+            icon: Icons.more_horiz,
+            label: 'More',
+            background: Colors.white,
+            foreground: AppColors.textPrimary,
+            flex: 3,
+            outlined: true,
+            onTap: () => _showMore(context),
           ),
         ],
       ),
     );
   }
+
+  void _showMore(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(8, 8, 8, 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    color: AppColors.border,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'More actions',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                ),
+                _MoreTile(icon: Icons.folder_outlined, label: 'Files', color: const Color(0xFF3949AB), onTap: onFiles),
+                _MoreTile(icon: Icons.edit_outlined, label: 'Edit', color: AppColors.accentOrange, onTap: onEdit),
+                _MoreTile(icon: Icons.delete_outline, label: 'Delete', color: AppColors.primary, onTap: onDelete),
+                _MoreTile(icon: Icons.filter_none_outlined, label: 'Clone', color: AppColors.accentPurple, onTap: onClone),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
-class _Action extends StatelessWidget {
+class _Pill extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color background;
+  final Color foreground;
+  final VoidCallback onTap;
+  final int flex;
+  final bool outlined;
+
+  const _Pill({
+    required this.icon,
+    required this.label,
+    required this.background,
+    required this.foreground,
+    required this.onTap,
+    this.flex = 3,
+    this.outlined = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: flex,
+      child: Material(
+        color: background,
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            height: 28,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: outlined ? Border.all(color: const Color(0xFFE5E7EB)) : null,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, size: 14, color: foreground),
+                  const SizedBox(width: 4),
+                  Text(
+                    label,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      color: foreground,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MoreTile extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
   final VoidCallback onTap;
 
-  const _Action({
+  const _MoreTile({
     required this.icon,
     required this.label,
     required this.color,
@@ -72,39 +204,14 @@ class _Action extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2),
-          child: Column(
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, size: 16, color: color),
-              ),
-              const SizedBox(height: 3),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.caption.copyWith(
-                  color: color,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 10,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    return ListTile(
+      dense: true,
+      leading: Icon(icon, color: color),
+      title: Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
+      onTap: () {
+        Navigator.pop(context);
+        onTap();
+      },
     );
   }
 }

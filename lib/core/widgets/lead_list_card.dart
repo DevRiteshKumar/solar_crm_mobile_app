@@ -49,71 +49,93 @@ class LeadListCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pinColor = LeadPinStyle.colorFor(lead);
+    final name = lead.customerName.trim().isNotEmpty ? lead.customerName : lead.businessName;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(16),
           child: Ink(
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: selected ? pinColor.withValues(alpha: 0.45) : AppColors.border,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 16,
-                  offset: const Offset(0, 6),
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(16),
               child: Container(
                 decoration: BoxDecoration(
-                  border: Border(left: BorderSide(color: pinColor, width: 5)),
+                  border: Border(left: BorderSide(color: pinColor, width: 4)),
                 ),
-                padding: const EdgeInsets.fromLTRB(12, 12, 10, 10),
+                padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _Header(
-                      initials: showIndex
-                          ? '$index'
-                          : _initials(
-                              lead.customerName.trim().isNotEmpty
-                                  ? lead.customerName
-                                  : lead.businessName,
-                            ),
-                      color: pinColor,
-                      checkedIn: checkedIn,
-                      name: lead.customerName.trim().isNotEmpty
-                          ? lead.customerName
-                          : lead.businessName,
-                      leadType: lead.leadType,
-                      lastContact: lead.lastContact,
-                      onMore: onMore,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _LeadAvatar(
+                          label: showIndex ? '$index' : _initials(name),
+                          color: pinColor,
+                          checkedIn: checkedIn,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: AppTextStyles.bodyMedium.copyWith(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w800,
+                                        height: 1.2,
+                                      ),
+                                    ),
+                                  ),
+                                  if (lead.leadType.trim().isNotEmpty) ...[
+                                    const SizedBox(width: 6),
+                                    _LeadTypeChip(type: lead.leadType),
+                                  ],
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 10),
-                    _ContactBlock(
+                    const SizedBox(height: 8),
+                    _ContactGrid(
                       phone: lead.displayPhone,
                       email: lead.displayEmail,
                       address: lead.displayAddress,
-                      accent: pinColor,
+                      lastContact: lead.lastContact,
                     ),
                     if (onUpdate != null) ...[
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 8),
                       GestureDetector(
                         onTap: () {},
                         child: LeadFieldDropdowns(lead: lead, onChanged: onUpdate!),
                       ),
                     ],
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
                     LeadQuickActions(
                       onCall: onCall,
                       onNavigate: onNavigate,
@@ -142,175 +164,93 @@ class LeadListCard extends StatelessWidget {
   }
 }
 
-class _Header extends StatelessWidget {
-  final String initials;
-  final Color color;
-  final bool checkedIn;
-  final String name;
-  final String leadType;
+class _ContactGrid extends StatelessWidget {
+  final String phone;
+  final String email;
+  final String address;
   final String? lastContact;
-  final VoidCallback? onMore;
 
-  const _Header({
-    required this.initials,
-    required this.color,
-    required this.checkedIn,
-    required this.name,
-    required this.leadType,
+  const _ContactGrid({
+    required this.phone,
+    required this.email,
+    required this.address,
     required this.lastContact,
-    this.onMore,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
       children: [
-        _LeadAvatar(label: initials, color: color, checkedIn: checkedIn),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        height: 1.2,
-                      ),
-                    ),
-                  ),
-                  if (leadType.trim().isNotEmpty) ...[
-                    const SizedBox(width: 6),
-                    _LeadTypeChip(type: leadType),
-                  ],
-                ],
+        Row(
+          children: [
+            Expanded(
+              child: _InfoLine(
+                icon: Icons.call_outlined,
+                text: phone,
+                iconColor: AppColors.primary,
               ),
-              if (lastContact != null && lastContact!.isNotEmpty) ...[
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const Icon(Icons.access_time, size: 12, color: AppColors.textHint),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        'Last contact $lastContact',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTextStyles.caption.copyWith(
-                          color: AppColors.textHint,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 11,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ],
-          ),
-        ),
-        if (onMore != null)
-          InkWell(
-            onTap: onMore,
-            borderRadius: BorderRadius.circular(20),
-            child: const Padding(
-              padding: EdgeInsets.all(4),
-              child: Icon(Icons.more_vert, size: 20, color: AppColors.textHint),
             ),
-          ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _InfoLine(
+                icon: Icons.mail_outline_rounded,
+                text: email,
+                iconColor: const Color(0xFF1565C0),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            Expanded(
+              child: _InfoLine(
+                icon: Icons.location_on_outlined,
+                text: address,
+                iconColor: AppColors.accentOrange,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _InfoLine(
+                icon: Icons.access_time,
+                text: lastContact?.trim().isNotEmpty == true ? lastContact! : '-',
+                iconColor: const Color(0xFF00897B),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
 }
 
-class _ContactBlock extends StatelessWidget {
-  final String phone;
-  final String email;
-  final String address;
-  final Color accent;
-
-  const _ContactBlock({
-    required this.phone,
-    required this.email,
-    required this.address,
-    required this.accent,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF7F8FA),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: _MetaRow(
-                  icon: Icons.call_outlined,
-                  text: phone,
-                  color: AppColors.phoneLink,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _MetaRow(
-                  icon: Icons.mail_outline_rounded,
-                  text: email,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          _MetaRow(
-            icon: Icons.location_on_outlined,
-            text: address,
-            color: accent,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MetaRow extends StatelessWidget {
+class _InfoLine extends StatelessWidget {
   final IconData icon;
   final String text;
-  final Color color;
+  final Color iconColor;
 
-  const _MetaRow({
+  const _InfoLine({
     required this.icon,
     required this.text,
-    required this.color,
+    required this.iconColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 14, color: color),
-        const SizedBox(width: 6),
+        Icon(icon, size: 14, color: iconColor),
+        const SizedBox(width: 5),
         Expanded(
           child: Text(
             text,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.caption.copyWith(
-              color: color,
-              fontWeight: FontWeight.w600,
+            style: const TextStyle(
               fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
             ),
           ),
         ),
@@ -371,8 +311,8 @@ class _LeadAvatar extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         Container(
-          width: 42,
-          height: 42,
+          width: 36,
+          height: 36,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: color,
@@ -382,22 +322,22 @@ class _LeadAvatar extends StatelessWidget {
             label,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 14,
+              fontSize: 13,
               fontWeight: FontWeight.w800,
             ),
           ),
         ),
         if (checkedIn)
           Positioned(
-            right: -3,
-            bottom: -3,
+            right: -2,
+            bottom: -2,
             child: Container(
-              padding: const EdgeInsets.all(2),
+              padding: const EdgeInsets.all(1),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.check_circle, size: 14, color: AppColors.success),
+              child: const Icon(Icons.check_circle, size: 12, color: AppColors.success),
             ),
           ),
       ],
